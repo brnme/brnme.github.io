@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://brnme.github.io/"/>
-  <updated>2020-05-08T15:00:04.412Z</updated>
+  <updated>2020-05-09T16:42:31.419Z</updated>
   <id>https://brnme.github.io/</id>
   
   <author>
@@ -17,9 +17,35 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>留言板01 和模版系统较劲</title>
+    <link href="https://brnme.github.io/2020/05/django-dev-01/"/>
+    <id>https://brnme.github.io/2020/05/django-dev-01/</id>
+    <published>2020-05-09T14:56:44.000Z</published>
+    <updated>2020-05-09T16:42:31.419Z</updated>
+    
+    <content type="html"><![CDATA[<p>早上在码字，22：00开始学习。</p><p>以前虽然鼓捣过一下子但是基本上就是照着教程复制一遍代码，没有任何主要的收获。</p><p>这次还是希望能真正弄到点真东西，所以会认真地做笔记，希望留下的笔记以后能帮到后人。</p><p>按照教程说的，得在app目录里面创建templates目录。<br>需要在templates目录中创建一个与应用同名的目录，这个留言板应用的名字是board，所以需要创建的名次是</p><blockquote><p>模板命名空间</p><blockquote><p>虽然我们现在可以将模板文件直接放在 polls/templates 文件夹中（而不是再建立一个 polls 子文件夹），但是这样做不太好。Django 将会选择第一个匹配的模板文件，如果你有一个模板文件正好和另一个应用中的某个模板文件重名，Django 没有办法 区分 它们。我们需要帮助 Django 选择正确的模板，最好的方法就是把他们放入各自的 命名空间 中，也就是把这些模板放入一个和 自身 应用重名的子文件夹里。</p><p>引自官方教程的汉化版</p></blockquote></blockquote><p>毕竟是技术人员写出来的教程，官方教程一个敢写，一个也敢翻，英文版的我也没能看懂，汉化版的我也没看懂。</p><p>简单拆分一下，这个的意思大概是：</p><p>命名空间是为了避免程序内同名资源冲突而存在的。Django有简易的命名空间机制，不过并没有刻意地去实现。所以在模版系统里，需要写成命名空间+模版名的形式，就像board/index,如果加上app目录和templates目录的话就变成了这样：</p><p><span style="color:green">board</span>/templates/<span style="color:red">board/index.html</span></p><p><span style="color:green">绿色字</span>是 <em>app名称</em> ，<span style="color:red">红色字</span>是 <em>命名空间+模版名</em></p><p>非常反直觉。</p><p>不知不觉已经0:41了，该休息了。</p><p>总结下今天做了啥。</p><p>就是在board这个app目录下面创建了个templates目录，其他事情一概还没开始干，呵呵。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;早上在码字，22：00开始学习。&lt;/p&gt;
+&lt;p&gt;以前虽然鼓捣过一下子但是基本上就是照着教程复制一遍代码，没有任何主要的收获。&lt;/p&gt;
+&lt;p&gt;这次还是希望能真正弄到点真东西，所以会认真地做笔记，希望留下的笔记以后能帮到后人。&lt;/p&gt;
+&lt;p&gt;按照教程说的，得在app目录里面创建
+      
+    
+    </summary>
+    
+    
+      <category term="Django" scheme="https://brnme.github.io/tags/Django/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Django学习计划</title>
-    <link href="https://brnme.github.io/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
-    <id>https://brnme.github.io/Django学习记录/</id>
+    <link href="https://brnme.github.io/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    <id>https://brnme.github.io/2020/05/Django学习记录/</id>
     <published>2020-05-08T13:01:27.000Z</published>
     <updated>2020-05-08T15:00:04.412Z</updated>
     
@@ -44,8 +70,8 @@
   
   <entry>
     <title>网文路难走2</title>
-    <link href="https://brnme.github.io/wangwendelubuhaozou2/"/>
-    <id>https://brnme.github.io/wangwendelubuhaozou2/</id>
+    <link href="https://brnme.github.io/2020/05/wangwendelubuhaozou2/"/>
+    <id>https://brnme.github.io/2020/05/wangwendelubuhaozou2/</id>
     <published>2020-05-08T12:29:44.000Z</published>
     <updated>2020-05-08T13:01:36.558Z</updated>
     
@@ -70,8 +96,8 @@
   
   <entry>
     <title>新书《你们穿越者我学不来》记录</title>
-    <link href="https://brnme.github.io/xuebulai-jilu/"/>
-    <id>https://brnme.github.io/xuebulai-jilu/</id>
+    <link href="https://brnme.github.io/2019/11/xuebulai-jilu/"/>
+    <id>https://brnme.github.io/2019/11/xuebulai-jilu/</id>
     <published>2019-11-21T15:44:39.000Z</published>
     <updated>2019-11-22T15:58:57.471Z</updated>
     
@@ -96,8 +122,8 @@
   
   <entry>
     <title>关于抄袭</title>
-    <link href="https://brnme.github.io/about-chaoxi/"/>
-    <id>https://brnme.github.io/about-chaoxi/</id>
+    <link href="https://brnme.github.io/2019/11/about-chaoxi/"/>
+    <id>https://brnme.github.io/2019/11/about-chaoxi/</id>
     <published>2019-11-19T03:17:16.000Z</published>
     <updated>2019-11-20T14:54:49.340Z</updated>
     
@@ -120,8 +146,8 @@
   
   <entry>
     <title>好久没写了</title>
-    <link href="https://brnme.github.io/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/"/>
-    <id>https://brnme.github.io/好久没写了/</id>
+    <link href="https://brnme.github.io/2019/11/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/"/>
+    <id>https://brnme.github.io/2019/11/好久没写了/</id>
     <published>2019-11-19T02:50:08.000Z</published>
     <updated>2019-11-19T03:27:08.811Z</updated>
     
@@ -142,8 +168,8 @@
   
   <entry>
     <title>链养猫为什么不靠谱</title>
-    <link href="https://brnme.github.io/foolishcateth/"/>
-    <id>https://brnme.github.io/foolishcateth/</id>
+    <link href="https://brnme.github.io/2017/12/foolishcateth/"/>
+    <id>https://brnme.github.io/2017/12/foolishcateth/</id>
     <published>2017-12-07T13:28:52.000Z</published>
     <updated>2017-12-07T13:31:04.671Z</updated>
     
@@ -165,8 +191,8 @@
   
   <entry>
     <title>新的博傻游戏：警惕链养猫</title>
-    <link href="https://brnme.github.io/catinblockchain/"/>
-    <id>https://brnme.github.io/catinblockchain/</id>
+    <link href="https://brnme.github.io/2017/12/catinblockchain/"/>
+    <id>https://brnme.github.io/2017/12/catinblockchain/</id>
     <published>2017-12-06T16:54:15.000Z</published>
     <updated>2017-12-06T16:56:20.317Z</updated>
     
@@ -189,8 +215,8 @@
   
   <entry>
     <title>为什么互联网大佬们都开始扶贫了</title>
-    <link href="https://brnme.github.io/why-big-it-companies-start-to-fupin/"/>
-    <id>https://brnme.github.io/why-big-it-companies-start-to-fupin/</id>
+    <link href="https://brnme.github.io/2017/12/why-big-it-companies-start-to-fupin/"/>
+    <id>https://brnme.github.io/2017/12/why-big-it-companies-start-to-fupin/</id>
     <published>2017-12-04T16:27:49.000Z</published>
     <updated>2017-12-04T16:28:29.757Z</updated>
     
@@ -215,8 +241,8 @@
   
   <entry>
     <title>网文的路不好走</title>
-    <link href="https://brnme.github.io/iwanttodobetter/"/>
-    <id>https://brnme.github.io/iwanttodobetter/</id>
+    <link href="https://brnme.github.io/2017/12/iwanttodobetter/"/>
+    <id>https://brnme.github.io/2017/12/iwanttodobetter/</id>
     <published>2017-12-03T16:13:09.000Z</published>
     <updated>2017-12-04T04:18:06.868Z</updated>
     

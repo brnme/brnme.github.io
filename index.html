@@ -82,6 +82,73 @@
       <div id="main" class="wrapper">
         <div id="primary" class="site-content"><div id="content" role="main">
   
+    <article id="post-django-dev-01" class="post-django-dev-01 post type-post status-publish format-standard hentry">
+    <!---->
+
+      <header class="entry-header">
+        
+        
+  
+    <h1 class="entry-title">
+      <a class="article-title" href="/2020/05/django-dev-01/">留言板01 和模版系统较劲</a>
+    </h1>
+  
+
+        
+        <div class="comments-link">
+            
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2020/05/django-dev-01/" data-id="ck9zv12820005cgro2hyq0ha9" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+
+        </div><!-- .comments-link -->
+      </header><!-- .entry-header -->
+
+    <div class="entry-content">
+      
+        <p>早上在码字，22：00开始学习。</p>
+<p>以前虽然鼓捣过一下子但是基本上就是照着教程复制一遍代码，没有任何主要的收获。</p>
+<p>这次还是希望能真正弄到点真东西，所以会认真地做笔记，希望留下的笔记以后能帮到后人。</p>
+<p>按照教程说的，得在app目录里面创建templates目录。<br>需要在templates目录中创建一个与应用同名的目录，这个留言板应用的名字是board，所以需要创建的名次是</p>
+<blockquote>
+<p>模板命名空间</p>
+<blockquote>
+<p>虽然我们现在可以将模板文件直接放在 polls/templates 文件夹中（而不是再建立一个 polls 子文件夹），但是这样做不太好。Django 将会选择第一个匹配的模板文件，如果你有一个模板文件正好和另一个应用中的某个模板文件重名，Django 没有办法 区分 它们。我们需要帮助 Django 选择正确的模板，最好的方法就是把他们放入各自的 命名空间 中，也就是把这些模板放入一个和 自身 应用重名的子文件夹里。</p>
+<p>引自官方教程的汉化版</p>
+</blockquote>
+</blockquote>
+<p>毕竟是技术人员写出来的教程，官方教程一个敢写，一个也敢翻，英文版的我也没能看懂，汉化版的我也没看懂。</p>
+<p>简单拆分一下，这个的意思大概是：</p>
+<p>命名空间是为了避免程序内同名资源冲突而存在的。Django有简易的命名空间机制，不过并没有刻意地去实现。所以在模版系统里，需要写成命名空间+模版名的形式，就像board/index,如果加上app目录和templates目录的话就变成了这样：</p>
+<p><span style="color:green">board</span>/templates/<span style="color:red">board/index.html</span></p>
+<p><span style="color:green">绿色字</span>是 <em>app名称</em> ，<span style="color:red">红色字</span>是 <em>命名空间+模版名</em></p>
+<p>非常反直觉。</p>
+<p>不知不觉已经0:41了，该休息了。</p>
+<p>总结下今天做了啥。</p>
+<p>就是在board这个app目录下面创建了个templates目录，其他事情一概还没开始干，呵呵。</p>
+
+      
+    </div><!-- .entry-content -->
+
+    <footer class="entry-meta">
+    <a href="/2020/05/django-dev-01/">
+    <time datetime="2020-05-09T14:56:44.000Z" class="entry-date">
+        2020-05-09
+    </time>
+</a>
+    
+    
+  <span class="article-delim">&#8226;</span>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Django/" rel="tag">Django</a></li></ul>
+
+    </footer>
+</article>
+
+
+
+
+
+
+  
     <article id="post-Django学习记录" class="post-Django学习记录 post type-post status-publish format-standard hentry">
     <!---->
 
@@ -90,14 +157,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">Django学习计划</a>
+      <a class="article-title" href="/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">Django学习计划</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" data-id="ck9ygy8l700029gro7hld9s0q" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" data-id="ck9zv128a0007cgro8h3m7km5" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -180,7 +247,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
+    <a href="/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">
     <time datetime="2020-05-08T13:01:27.000Z" class="entry-date">
         2020-05-08
     </time>
@@ -204,14 +271,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/wangwendelubuhaozou2/">网文路难走2</a>
+      <a class="article-title" href="/2020/05/wangwendelubuhaozou2/">网文路难走2</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/wangwendelubuhaozou2/" data-id="ck9ygy8m7000c9grocoje705p" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2020/05/wangwendelubuhaozou2/" data-id="ck9zv12dg000pcgroer2r9w1b" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -232,7 +299,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/wangwendelubuhaozou2/">
+    <a href="/2020/05/wangwendelubuhaozou2/">
     <time datetime="2020-05-08T12:29:44.000Z" class="entry-date">
         2020-05-08
     </time>
@@ -259,14 +326,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/xuebulai-jilu/">新书《你们穿越者我学不来》记录</a>
+      <a class="article-title" href="/2019/11/xuebulai-jilu/">新书《你们穿越者我学不来》记录</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/xuebulai-jilu/" data-id="ck9ygy8mk000g9grogibzd88m" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2019/11/xuebulai-jilu/" data-id="ck9zv12860006cgro34zq13yw" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -317,7 +384,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/xuebulai-jilu/">
+    <a href="/2019/11/xuebulai-jilu/">
     <time datetime="2019-11-21T15:44:39.000Z" class="entry-date">
         2019-11-21
     </time>
@@ -344,14 +411,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/about-chaoxi/">关于抄袭</a>
+      <a class="article-title" href="/2019/11/about-chaoxi/">关于抄袭</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/about-chaoxi/" data-id="ck9ygy8lj00059gro75xc4gny" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2019/11/about-chaoxi/" data-id="ck9zv127l0002cgrocd6n4fm1" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -388,7 +455,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/about-chaoxi/">
+    <a href="/2019/11/about-chaoxi/">
     <time datetime="2019-11-19T03:17:16.000Z" class="entry-date">
         2019-11-19
     </time>
@@ -412,14 +479,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/">好久没写了</a>
+      <a class="article-title" href="/2019/11/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/">好久没写了</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/" data-id="ck9ygy8mu000i9grodz1o5n2n" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2019/11/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/" data-id="ck9zv12db000ncgro89p27vqg" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -449,7 +516,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/">
+    <a href="/2019/11/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/">
     <time datetime="2019-11-19T02:50:08.000Z" class="entry-date">
         2019-11-19
     </time>
@@ -473,14 +540,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/foolishcateth/">链养猫为什么不靠谱</a>
+      <a class="article-title" href="/2017/12/foolishcateth/">链养猫为什么不靠谱</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/foolishcateth/" data-id="ck9ygy8lx00089gro7pn1by40" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2017/12/foolishcateth/" data-id="ck9zv122d0000cgrof2o6734h" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -515,7 +582,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/foolishcateth/">
+    <a href="/2017/12/foolishcateth/">
     <time datetime="2017-12-07T13:28:52.000Z" class="entry-date">
         2017-12-07
     </time>
@@ -542,14 +609,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/catinblockchain/">新的博傻游戏：警惕链养猫</a>
+      <a class="article-title" href="/2017/12/catinblockchain/">新的博傻游戏：警惕链养猫</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/catinblockchain/" data-id="ck9ygy8lr00079gro9r9dbqi0" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2017/12/catinblockchain/" data-id="ck9zv128i000acgro97gbgfle" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -571,7 +638,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/catinblockchain/">
+    <a href="/2017/12/catinblockchain/">
     <time datetime="2017-12-06T16:54:15.000Z" class="entry-date">
         2017-12-07
     </time>
@@ -598,14 +665,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/why-big-it-companies-start-to-fupin/">为什么互联网大佬们都开始扶贫了</a>
+      <a class="article-title" href="/2017/12/why-big-it-companies-start-to-fupin/">为什么互联网大佬们都开始扶贫了</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/why-big-it-companies-start-to-fupin/" data-id="ck9ygy8mc000d9grof0281ocn" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2017/12/why-big-it-companies-start-to-fupin/" data-id="ck9zv128n000bcgro32aqcsro" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -645,7 +712,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/why-big-it-companies-start-to-fupin/">
+    <a href="/2017/12/why-big-it-companies-start-to-fupin/">
     <time datetime="2017-12-04T16:27:49.000Z" class="entry-date">
         2017-12-05
     </time>
@@ -672,14 +739,14 @@
         
   
     <h1 class="entry-title">
-      <a class="article-title" href="/iwanttodobetter/">网文的路不好走</a>
+      <a class="article-title" href="/2017/12/iwanttodobetter/">网文的路不好走</a>
     </h1>
   
 
         
         <div class="comments-link">
             
-            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/iwanttodobetter/" data-id="ck9ygy8m4000b9gro3uqhevhw" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
+            <!--<a href="javascript:void(0);" target="_blank" rel="noopener" data-url="https://brnme.github.io/2017/12/iwanttodobetter/" data-id="ck9zv128r000ecgroaagjb92c" class="leave-reply bdsharebuttonbox" data-cmd="more">Share</a>-->
             <div class="bdsharebuttonbox"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
 
         </div><!-- .comments-link -->
@@ -727,7 +794,7 @@
     </div><!-- .entry-content -->
 
     <footer class="entry-meta">
-    <a href="/iwanttodobetter/">
+    <a href="/2017/12/iwanttodobetter/">
     <time datetime="2017-12-03T16:13:09.000Z" class="entry-date">
         2017-12-04
     </time>
@@ -760,23 +827,23 @@
       <ul>
         
           <li>
-            <a href="/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">Django学习计划</a>
+            <a href="/2020/05/django-dev-01/">留言板01 和模版系统较劲</a>
           </li>
         
           <li>
-            <a href="/wangwendelubuhaozou2/">网文路难走2</a>
+            <a href="/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/">Django学习计划</a>
           </li>
         
           <li>
-            <a href="/xuebulai-jilu/">新书《你们穿越者我学不来》记录</a>
+            <a href="/2020/05/wangwendelubuhaozou2/">网文路难走2</a>
           </li>
         
           <li>
-            <a href="/about-chaoxi/">关于抄袭</a>
+            <a href="/2019/11/xuebulai-jilu/">新书《你们穿越者我学不来》记录</a>
           </li>
         
           <li>
-            <a href="/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/">好久没写了</a>
+            <a href="/2019/11/about-chaoxi/">关于抄袭</a>
           </li>
         
       </ul>
@@ -788,7 +855,7 @@
   <aside class="widget">
     <h3 class="widget-title">Tags</h3>
     <div class="widget-content">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%B0%E4%B9%A6%E8%AE%B0%E5%BD%95/" rel="tag">新书记录</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/" rel="tag">网文世界</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%84%E8%AE%BA/" rel="tag">评论</a><span class="tag-list-count">3</span></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Django/" rel="tag">Django</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%96%B0%E4%B9%A6%E8%AE%B0%E5%BD%95/" rel="tag">新书记录</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/" rel="tag">网文世界</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%AF%84%E8%AE%BA/" rel="tag">评论</a><span class="tag-list-count">3</span></li></ul>
     </div>
   </aside>
 
@@ -797,7 +864,7 @@
   <aside class="widget">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget-content tagcloud">
-      <a href="/tags/%E6%96%B0%E4%B9%A6%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">新书记录</a> <a href="/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/" style="font-size: 15px;">网文世界</a> <a href="/tags/%E8%AF%84%E8%AE%BA/" style="font-size: 20px;">评论</a>
+      <a href="/tags/Django/" style="font-size: 10px;">Django</a> <a href="/tags/%E6%96%B0%E4%B9%A6%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">新书记录</a> <a href="/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/" style="font-size: 15px;">网文世界</a> <a href="/tags/%E8%AF%84%E8%AE%BA/" style="font-size: 20px;">评论</a>
     </div>
   </aside>
 
