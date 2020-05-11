@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://brnme.github.io/"/>
-  <updated>2020-05-09T16:42:31.419Z</updated>
+  <updated>2020-05-11T16:57:25.902Z</updated>
   <id>https://brnme.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>留言板02 urls</title>
+    <link href="https://brnme.github.io/2020/05/django-dev-02/"/>
+    <id>https://brnme.github.io/2020/05/django-dev-02/</id>
+    <published>2020-05-11T15:19:37.000Z</published>
+    <updated>2020-05-11T16:57:25.902Z</updated>
+    
+    <content type="html"><![CDATA[<p>留言板这个应用只需要一个输入页面，一个显示页面。</p><p>对应的链接就是/liuyan、/xianshi。</p><p>也就是说，两个url，两个view函数。</p><p>之前我鼓捣着玩的时候从最简单的HTTPResponse开始做过一回，所以这次直接弄内置视图函数了。</p><p>有种被新手教程坑了的感觉。</p><p>新手教学建议我把app放在manage.py同一目录下。以我错误的理解，这似乎会导致urls.py找不到board模块——事实证明我错得很离谱。</p><p>include函数的输入是<span style="color:red">字符串</span>！</p><p>我还以为这里出问题了担心得要死。</p><p>记录一下我认为的路由过程。</p><p>先在主模块里查询urls，分出一个目录，把剩下的部分分包给子模块，让子模块去根据url确定具体的views函数。</p><p>include(&lt; char &gt;) 函数的输入是<span style="color:red">模块名.urls</span></p><p>接下来把model确定一下。</p><p>因为要用到通用视图，所以先确定两个页面的对应通用视图是什么。</p><p>xianshi =&gt; detailview</p><p>liuyan =&gt; formview</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;留言板这个应用只需要一个输入页面，一个显示页面。&lt;/p&gt;
+&lt;p&gt;对应的链接就是/liuyan、/xianshi。&lt;/p&gt;
+&lt;p&gt;也就是说，两个url，两个view函数。&lt;/p&gt;
+&lt;p&gt;之前我鼓捣着玩的时候从最简单的HTTPResponse开始做过一回，所以这次直接弄内置视图
+      
+    
+    </summary>
+    
+    
+      <category term="Django" scheme="https://brnme.github.io/tags/Django/"/>
+    
+  </entry>
   
   <entry>
     <title>留言板01 和模版系统较劲</title>
