@@ -5,9 +5,9 @@
   <subtitle>少壮不努力，老大写小说……</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="https://brnme.github.io/"/>
-  <updated>2020-11-20T17:09:45.475Z</updated>
-  <id>https://brnme.github.io/</id>
+  <link href="https://blog.banqiao.me/"/>
+  <updated>2020-12-07T04:19:18.621Z</updated>
+  <id>https://blog.banqiao.me/</id>
   
   <author>
     <name>半樵</name>
@@ -17,19 +17,119 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>青年生活团wiki的建立</title>
-    <link href="https://brnme.github.io/2020/11/54life/"/>
-    <id>https://brnme.github.io/2020/11/54life/</id>
-    <published>2020-11-20T16:26:37.000Z</published>
-    <updated>2020-11-20T17:09:45.475Z</updated>
+    <title>删除吊销文件里的小冒号</title>
+    <link href="https://blog.banqiao.me/2020/12/openpgp-revoke/"/>
+    <id>https://blog.banqiao.me/2020/12/openpgp-revoke/</id>
+    <published>2020-12-07T03:59:19.000Z</published>
+    <updated>2020-12-07T04:19:18.621Z</updated>
     
-    <content type="html"><![CDATA[<p><a href="https://imgchr.com/i/Dlwn3R" target="_blank" rel="noopener"><img src="https://s3.ax1x.com/2020/11/21/Dlwn3R.jpg" alt="Dlwn3R.jpg"></a></p><p>我一直有一个巨大的困惑。</p><p>为什么改革开放了这么多年，婚俗却越来越让人讨厌？</p><p>嘛，我怎么说也算是到了家人认为的婚龄了。又开始给安排了。</p><p>可是，我始终没有松口。</p><p>也不是怕承担责任之类的奇怪的事情，我只是觉得，这一切都是错误的。</p><p>不只是婚俗，大量的“老物件”正在一件件地被重新捡起来。</p><p>中国社会，正在重新变成100年前的样子，即便生产力正在巨大进步，但依旧没有用。</p><p>甚至巨大的生产力，正在加速倒退。</p><p>富足的生活并没有让人有进步思维，反而催生出了更加令人悲哀的一幕幕。</p><p>要想改变，有点棘手。</p><p>但不是不能做。</p><p>这个wiki从青年的日常生活入手，逐渐重塑整个逻辑。不敢说能重塑社会，但，至少要提出一个标杆来。</p><p>还是要招募志愿者，三观同步比较重要……</p><p>这个wiki使用的是meta.miraheze.org 这个 维基农场，运营者还是非常的给力的，在后台申请，提出合适的理由，基本上就能通过了。</p>]]></content>
+    <content type="html"><![CDATA[<p>​    我又又又把gpg密码给忘掉了。</p><p>还好这次提前做了吊销文件。</p><p>但是，全网没有一个人是告诉你怎么吊销gpg密钥的，只告诉了你怎么生成。</p><p>其实也说了，就是说要导入，和导入一个普通的密钥文件一样。</p><p>但是按照寻常方法导入的话，你会发现根本无法导入。</p><p>其实为了防止失误手滑，开发者们做了一个保险，打开revoke文件就能看到了，就是下面这段话。</p><blockquote><p>吊销证书是一种“杀死开关”，用于公开声明密钥将不再使用。<br>吊销证书一旦发布，便不可能再被撤回。</p><p>在妥协或私钥丢失的情况下使用它来吊销密钥。</p><p>为了避免意外使用此文件，在下面的 5 个短横线之前插入了一个冒号。<br>在导入和发布此吊销证书之前，请用文本编辑器删除此冒号。</p><p>:—–BEGIN PGP PUBLIC KEY BLOCK—–</p></blockquote><p>把这个冒号去掉，保存文件，再导入，你的密钥就没有了。</p><p>再发布到网上去，gameover！</p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;&lt;a href=&quot;https://imgchr.com/i/Dlwn3R&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://s3.ax1x.com/2020/11/21/Dlwn3R.jpg&quot; alt=&quot;Dlwn3R.jpg
+        &lt;p&gt;​    我又又又把gpg密码给忘掉了。&lt;/p&gt;
+&lt;p&gt;还好这次提前做了吊销文件。&lt;/p&gt;
+&lt;p&gt;但是，全网没有一个人是告诉你怎么吊销gpg密钥的，只告诉了你怎么生成。&lt;/p&gt;
+&lt;p&gt;其实也说了，就是说要导入，和导入一个普通的密钥文件一样。&lt;/p&gt;
+&lt;p&gt;但是按照寻常方法导
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>坑1</title>
+    <link href="https://blog.banqiao.me/2020/11/cloudbase-wikimedia/"/>
+    <id>https://blog.banqiao.me/2020/11/cloudbase-wikimedia/</id>
+    <published>2020-11-30T14:41:50.000Z</published>
+    <updated>2020-11-30T15:13:40.156Z</updated>
+    
+    <content type="html"><![CDATA[<p>要挖一个大坑，先在这里说一下想干什么。</p><p>把wikimedia这个程序放在cloudbase里跑，然后把配置文件发布出来。</p><p>做完wikimedia就做wordpress，都是php的应该有共性。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;要挖一个大坑，先在这里说一下想干什么。&lt;/p&gt;
+&lt;p&gt;把wikimedia这个程序放在cloudbase里跑，然后把配置文件发布出来。&lt;/p&gt;
+&lt;p&gt;做完wikimedia就做wordpress，都是php的应该有共性。&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>whql</title>
+    <link href="https://blog.banqiao.me/2020/11/whql/"/>
+    <id>https://blog.banqiao.me/2020/11/whql/</id>
+    <published>2020-11-30T08:24:45.000Z</published>
+    <updated>2020-11-30T08:28:53.907Z</updated>
+    
+    <content type="html"><![CDATA[<p>提纲：</p><p>他在</p><p>他首先是个CG大师，其次才是个“战狼画师”。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;提纲：&lt;/p&gt;
+&lt;p&gt;他在&lt;/p&gt;
+&lt;p&gt;他首先是个CG大师，其次才是个“战狼画师”。&lt;/p&gt;
+
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>抠门的阅文</title>
+    <link href="https://blog.banqiao.me/2020/11/yuewen-koumen/"/>
+    <id>https://blog.banqiao.me/2020/11/yuewen-koumen/</id>
+    <published>2020-11-25T04:00:12.000Z</published>
+    <updated>2020-11-25T04:00:12.325Z</updated>
+    
+    <content type="html"><![CDATA[<p>按照合同，这种话不能在公众场合说的，不过在这块自留地里面应该能够畅所欲言想怎么说就怎么说。</p><p>事情是这样的，我在阅文写了一个新媒体的买断，然后就发现问题大条了。</p><p>网站的流程太机械了，我也不知道他们是故意机械还是无意机械。</p><p>反正我10月份拿不到稿费了，需要在11月才能拿到。</p><p>还好我作为灵活就业人员是可以缓交社保的，10月的拿到11月交就行了。</p><p>这种时候真的是政府爸爸靠谱啊。</p><p>仔细看了看合同，最多交稿数字是30万。</p><p>而最低的入门级买断价是20元每千字。</p><p>试错一次最多要花6000块钱。</p><p>很少……</p><p>一百次也就60万。</p><p>而只要出一本爆款，受益就是几千万走起，甚至上亿。</p><p>而且……买断指的是全版权买断……</p><p>后续的衍生我一毛钱也拿不到，而他们可以随意地砍书。</p><p>比如一本书写到1000万字才开始赚钱，他们完全可以把我给一脚踢飞了，然后换一个便宜的人接着写——这完全可以做到，而且并不费事。</p><p>这些我毫无办法，只能被动地接受。</p><p>听起来毫无反抗之力的事情非常的多，事实上也是如此。</p><p>这就是资本。</p><p>之所以阅文的股价最漂亮，也是因为它在控制成本上做得实在是太好了。</p><p>苦的只有作者，只能产出单一的作品。</p><p>苦的还有读者，看不到更优秀的作品。</p><p>苦的还有未来的中国文化，只能吃一些残羹冷炙，从此没有更多机会了。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;按照合同，这种话不能在公众场合说的，不过在这块自留地里面应该能够畅所欲言想怎么说就怎么说。&lt;/p&gt;
+&lt;p&gt;事情是这样的，我在阅文写了一个新媒体的买断，然后就发现问题大条了。&lt;/p&gt;
+&lt;p&gt;网站的流程太机械了，我也不知道他们是故意机械还是无意机械。&lt;/p&gt;
+&lt;p&gt;反正我10月
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>青年生活团wiki的建立</title>
+    <link href="https://blog.banqiao.me/2020/11/54life/"/>
+    <id>https://blog.banqiao.me/2020/11/54life/</id>
+    <published>2020-11-20T16:26:37.000Z</published>
+    <updated>2020-11-30T13:35:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://s3.ax1x.com/2020/11/21/Dlwn3R.jpg" alt="Dlwn3R.jpg"></p><p>我一直有一个巨大的困惑。</p><p>为什么改革开放了这么多年，婚俗却越来越让人讨厌？</p><p>嘛，我怎么说也算是到了家人认为的婚龄了。又开始给安排了。</p><p>可是，我始终没有松口。</p><p>也不是怕承担责任之类幼稚的原因，我只是觉得，这一切都是错误的。</p><p>目前的婚俗，铺张、浪费、繁琐，消磨心情。</p><p>说是大喜事，却是一场巨大的劫难。</p><p>中央多次下发文件说要节省、节俭，但一场婚事怎么说也不会少于100万——还没有算婚房的钱。</p><p>这样的情况，</p><p>不只是婚俗，大量的“老物件”正在一件件地被重新捡起来。</p><p>中国社会，正在重新变成100年前的样子，即便生产力正在巨大进步，但依旧没有用。</p><p>甚至巨大的生产力，正在加速倒退。</p><p>富足的生活并没有让人有进步思维，反而催生出了更加令人悲哀的一幕幕。</p><p>要想改变，有点棘手。</p><p>但不是不能做。</p><p>这个wiki从青年的日常生活入手，逐渐重塑整个逻辑。不敢说能重塑社会，但，至少要提出一个标杆来。</p><p>还是要招募志愿者，三观同步比较重要……</p><p>这个wiki使用的是meta.miraheze.org 这个 维基农场，运营者还是非常的给力的，在后台申请，提出合适的理由，基本上就能通过了。</p><p>写一点东西看看。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;&lt;img src=&quot;https://s3.ax1x.com/2020/11/21/Dlwn3R.jpg&quot; alt=&quot;Dlwn3R.jpg&quot;&gt;&lt;/p&gt;
+&lt;p&gt;我一直有一个巨大的困惑。&lt;/p&gt;
+&lt;p&gt;为什么改革开放了这么多年，婚俗却越来越让人讨厌？&lt;/p&gt;
+&lt;p&gt;嘛，我怎么说也
       
     
     </summary>
@@ -39,10 +139,10 @@
   
   <entry>
     <title>评《最美逆行者》第一集：垃圾！</title>
-    <link href="https://brnme.github.io/2020/09/zuimeinixingzhe-1/"/>
-    <id>https://brnme.github.io/2020/09/zuimeinixingzhe-1/</id>
+    <link href="https://blog.banqiao.me/2020/09/zuimeinixingzhe-1/"/>
+    <id>https://blog.banqiao.me/2020/09/zuimeinixingzhe-1/</id>
     <published>2020-09-18T16:04:07.000Z</published>
-    <updated>2020-09-18T16:04:07.983Z</updated>
+    <updated>2020-11-30T16:17:15.447Z</updated>
     
     <content type="html"><![CDATA[<p>这剧的口碑已经炸裂了，差到了许多人都吐槽的地步，左中右一起骂，据说上一回有这个待遇的人是肖战……</p><p>hmmmm……</p><p>中文名：最美逆行者</p><p>外文名：HEROES IN HARM’S WAY</p><p>类    型：抗疫</p><p>出品公司：中央广播电视总台</p><p>制片地区：中国大陆</p><p>拍摄地点：天津</p><p>首播时间：2020年9月17日</p><p>导    演： 巨兴茂、殷飞、张萌、邹曦</p><p>编    剧：郭靖宇（总）、赵彦、胡彤玉、田良良、陈晨、邸哲文、林孟姣、汤祈岑、闫沫伊、李宸路、艾津</p><p>制片人：王浩（总）</p><p>主    演： 陈数、王志飞、杨志刚、姜妍、萨日娜、李依晓、史可、徐娇、阚清子、成泰燊、牛骏峰、马天宇、韩雪、张铭恩、肖燕</p><p>集    数： 14 集</p><p>每集长度：45 分钟</p><p>第一幕</p><p>陈数扮演的女军医瞒着女儿要去武汉支援，被女儿发现了。</p><p>第二幕</p><p>客运公司，要征集志愿者组建运输队。（网上争议最大的一段）</p><p>细说：</p><p>马上就要封城了，客运公司的司机集中在会议室，一个外地的年轻女司机没有离开，而是服从公司命令回来开会。</p><p>一个中年女司机询问年轻女司机，劝她回家，但是她没走。</p><p>然后领导来了，说要组建一个运输队。</p><p>有一个男的站起来说“党员优先”，然后许多男的都站出来和他一起签了字，按了红手印，就剩下一个名额了。</p><p>然后领导说：“没有女人站出来，是不是要挑个女的出来。”</p><p>然后点了那个中年女人，中年女人说自己有家人，出不来。</p><p>那个年轻女司机说她上，说嫁来武汉15年，就当回报武汉了。</p><p>我的评价 ： 愚不可及！</p><p>一口气在两个层面上都黑了。</p><p>网上的批评并不是空穴来风。</p><p>第一，编剧+导演脱离群众了，写出来的剧情生硬呆板得要死。</p><p>党员先上，没错。</p><p>但是党员里怎么可能没女性？这首先就不符合事实。</p><p>这是质疑中国共产党的代表性！</p><p>更是给极端田园女拳以机会啊！这可是总台出品的电视剧！不是阿猫阿狗拍的！</p><p>你往里面塞私货，就是在给党摸黑！</p><p>但哪怕党员里有女的，进去按手印了就对了吗？</p><p>这就是第二点了，即便第一点的问题不存在，那也有极为重要的问题。</p><p>编剧的台词编写功底为零啊，程式化、流水线，演员就像机器人，你写过样板戏还是怎么的？</p><p>我看了看资料，总编剧郭靖宇，1973年生，根本就没经历过那个年代啊，怎么和那个写成了一个味呢？</p><p>咳咳，开个玩笑……我个人是很喜欢那几套样板戏的，艺术上的造诣极深，代表的可是一代人的艺术巅峰，被人为政治化非常遗憾，不要再被我们这一代给污名化了。</p><p>但是生于1973年的郭靖宇不可原谅，抗疫、战疫这么好的题材交到他的手里，竟然反而成了高级黑了。</p><p>第三点，中年女人首先推脱，然后年轻女司机出马。</p><p>这个闹出了巨大的问题。</p><p>两人相差差不多10岁，中年女司机是本地人，年轻女司机是外地人。</p><p>代际割裂，还有本地、外地的割裂。</p><p>拉一个打一个的嫌疑巨大。</p><p>坏出坏水来了！</p><p>这剧得下架好好整改，不然我不能接受。</p><p>然后是有一个建筑工程师出场了，和正在居家隔离的母亲打电话，说有工程任务，他的儿子名叫卡卡，给他打了过去，说奶奶可能已经感染了。</p><p>关于第二幕的观点到此结束，开始说第三幕。</p><p>第三幕就是陈数请战，然后全国驰援武汉的剧情了……</p><p>陈数说想去省总二院，女大巴车司机（应该就是第二幕自己要求的那个）就送她去了。然后她说等着陈数，不然没车回去。</p><p>所以为了剧情，只能有一个女司机……胡闹呢？</p><p>还有那个“大军官”……你当你是国民党呢？？？？</p><p>陈数和王志飞碰头之后踢到2014年在非洲，可能……她的角色真的是套的陈薇模板。</p><p>有老战士知道病房急缺，不肯接受治疗。</p><p>然后第二幕里面的建筑工程师和女司机居然是两口子，女司机是卡卡的母亲……走的是满门忠烈风？？？？？？</p><p>王志飞的角色是对应的是张定宇。</p><p>建筑工程师和女司机离婚了。</p><p>最后一点点的时候又新出场两个角色，两个都是病患，王秋林医生抗击过非典，隔壁27床的病人，去汶川做过志愿者……</p><p>又是高度浓缩的……</p><p>虽然篇幅有限为了信息传达只能这样，但是觉得这样不太好。</p><p>emmm……个人感觉这片还是下架整改比较好，容易伤了武汉人民的心。</p>]]></content>
     
@@ -65,8 +165,8 @@
   
   <entry>
     <title>简评《王牌特工2：黄金圈》</title>
-    <link href="https://brnme.github.io/2020/09/kingman-2-md/"/>
-    <id>https://brnme.github.io/2020/09/kingman-2-md/</id>
+    <link href="https://blog.banqiao.me/2020/09/kingman-2-md/"/>
+    <id>https://blog.banqiao.me/2020/09/kingman-2-md/</id>
     <published>2020-09-17T15:57:27.000Z</published>
     <updated>2020-09-17T15:58:36.592Z</updated>
     
@@ -90,8 +190,8 @@
   
   <entry>
     <title>王牌特工简评</title>
-    <link href="https://brnme.github.io/2020/09/kingsman-md/"/>
-    <id>https://brnme.github.io/2020/09/kingsman-md/</id>
+    <link href="https://blog.banqiao.me/2020/09/kingsman-md/"/>
+    <id>https://blog.banqiao.me/2020/09/kingsman-md/</id>
     <published>2020-09-16T17:04:41.000Z</published>
     <updated>2020-09-18T16:12:42.099Z</updated>
     
@@ -114,8 +214,8 @@
   
   <entry>
     <title>奇案有感：别再痴迷贵族气质了</title>
-    <link href="https://brnme.github.io/2020/09/limiao-qian-nanhuang-md/"/>
-    <id>https://brnme.github.io/2020/09/limiao-qian-nanhuang-md/</id>
+    <link href="https://blog.banqiao.me/2020/09/limiao-qian-nanhuang-md/"/>
+    <id>https://blog.banqiao.me/2020/09/limiao-qian-nanhuang-md/</id>
     <published>2020-09-16T13:16:11.000Z</published>
     <updated>2020-09-16T13:17:56.904Z</updated>
     
@@ -135,8 +235,8 @@
   
   <entry>
     <title>留言板02 urls</title>
-    <link href="https://brnme.github.io/2020/05/django-dev-02/"/>
-    <id>https://brnme.github.io/2020/05/django-dev-02/</id>
+    <link href="https://blog.banqiao.me/2020/05/django-dev-02/"/>
+    <id>https://blog.banqiao.me/2020/05/django-dev-02/</id>
     <published>2020-05-11T15:19:37.000Z</published>
     <updated>2020-05-11T16:57:25.902Z</updated>
     
@@ -155,14 +255,14 @@
     </summary>
     
     
-      <category term="Django" scheme="https://brnme.github.io/tags/Django/"/>
+      <category term="Django" scheme="https://blog.banqiao.me/tags/Django/"/>
     
   </entry>
   
   <entry>
     <title>留言板01 和模版系统较劲</title>
-    <link href="https://brnme.github.io/2020/05/django-dev-01/"/>
-    <id>https://brnme.github.io/2020/05/django-dev-01/</id>
+    <link href="https://blog.banqiao.me/2020/05/django-dev-01/"/>
+    <id>https://blog.banqiao.me/2020/05/django-dev-01/</id>
     <published>2020-05-09T14:56:44.000Z</published>
     <updated>2020-05-09T16:42:31.419Z</updated>
     
@@ -181,14 +281,14 @@
     </summary>
     
     
-      <category term="Django" scheme="https://brnme.github.io/tags/Django/"/>
+      <category term="Django" scheme="https://blog.banqiao.me/tags/Django/"/>
     
   </entry>
   
   <entry>
     <title>Django学习计划</title>
-    <link href="https://brnme.github.io/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
-    <id>https://brnme.github.io/2020/05/Django学习记录/</id>
+    <link href="https://blog.banqiao.me/2020/05/Django%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
+    <id>https://blog.banqiao.me/2020/05/Django学习记录/</id>
     <published>2020-05-08T13:01:27.000Z</published>
     <updated>2020-05-08T15:00:04.412Z</updated>
     
@@ -213,8 +313,8 @@
   
   <entry>
     <title>网文路难走2</title>
-    <link href="https://brnme.github.io/2020/05/wangwendelubuhaozou2/"/>
-    <id>https://brnme.github.io/2020/05/wangwendelubuhaozou2/</id>
+    <link href="https://blog.banqiao.me/2020/05/wangwendelubuhaozou2/"/>
+    <id>https://blog.banqiao.me/2020/05/wangwendelubuhaozou2/</id>
     <published>2020-05-08T12:29:44.000Z</published>
     <updated>2020-05-08T13:01:36.558Z</updated>
     
@@ -233,14 +333,14 @@
     </summary>
     
     
-      <category term="网文世界" scheme="https://brnme.github.io/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/"/>
+      <category term="网文世界" scheme="https://blog.banqiao.me/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/"/>
     
   </entry>
   
   <entry>
     <title>新书《你们穿越者我学不来》记录</title>
-    <link href="https://brnme.github.io/2019/11/xuebulai-jilu/"/>
-    <id>https://brnme.github.io/2019/11/xuebulai-jilu/</id>
+    <link href="https://blog.banqiao.me/2019/11/xuebulai-jilu/"/>
+    <id>https://blog.banqiao.me/2019/11/xuebulai-jilu/</id>
     <published>2019-11-21T15:44:39.000Z</published>
     <updated>2019-11-22T15:58:57.471Z</updated>
     
@@ -259,14 +359,14 @@
     </summary>
     
     
-      <category term="新书记录" scheme="https://brnme.github.io/tags/%E6%96%B0%E4%B9%A6%E8%AE%B0%E5%BD%95/"/>
+      <category term="新书记录" scheme="https://blog.banqiao.me/tags/%E6%96%B0%E4%B9%A6%E8%AE%B0%E5%BD%95/"/>
     
   </entry>
   
   <entry>
     <title>关于抄袭</title>
-    <link href="https://brnme.github.io/2019/11/about-chaoxi/"/>
-    <id>https://brnme.github.io/2019/11/about-chaoxi/</id>
+    <link href="https://blog.banqiao.me/2019/11/about-chaoxi/"/>
+    <id>https://blog.banqiao.me/2019/11/about-chaoxi/</id>
     <published>2019-11-19T03:17:16.000Z</published>
     <updated>2019-11-20T14:54:49.340Z</updated>
     
@@ -289,8 +389,8 @@
   
   <entry>
     <title>好久没写了</title>
-    <link href="https://brnme.github.io/2019/11/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/"/>
-    <id>https://brnme.github.io/2019/11/好久没写了/</id>
+    <link href="https://blog.banqiao.me/2019/11/%E5%A5%BD%E4%B9%85%E6%B2%A1%E5%86%99%E4%BA%86/"/>
+    <id>https://blog.banqiao.me/2019/11/好久没写了/</id>
     <published>2019-11-19T02:50:08.000Z</published>
     <updated>2019-11-19T03:27:08.811Z</updated>
     
@@ -311,8 +411,8 @@
   
   <entry>
     <title>链养猫为什么不靠谱</title>
-    <link href="https://brnme.github.io/2017/12/foolishcateth/"/>
-    <id>https://brnme.github.io/2017/12/foolishcateth/</id>
+    <link href="https://blog.banqiao.me/2017/12/foolishcateth/"/>
+    <id>https://blog.banqiao.me/2017/12/foolishcateth/</id>
     <published>2017-12-07T13:28:52.000Z</published>
     <updated>2017-12-07T13:31:04.671Z</updated>
     
@@ -328,14 +428,14 @@
     </summary>
     
     
-      <category term="评论" scheme="https://brnme.github.io/tags/%E8%AF%84%E8%AE%BA/"/>
+      <category term="评论" scheme="https://blog.banqiao.me/tags/%E8%AF%84%E8%AE%BA/"/>
     
   </entry>
   
   <entry>
     <title>新的博傻游戏：警惕链养猫</title>
-    <link href="https://brnme.github.io/2017/12/catinblockchain/"/>
-    <id>https://brnme.github.io/2017/12/catinblockchain/</id>
+    <link href="https://blog.banqiao.me/2017/12/catinblockchain/"/>
+    <id>https://blog.banqiao.me/2017/12/catinblockchain/</id>
     <published>2017-12-06T16:54:15.000Z</published>
     <updated>2017-12-06T16:56:20.317Z</updated>
     
@@ -352,14 +452,14 @@
     </summary>
     
     
-      <category term="评论" scheme="https://brnme.github.io/tags/%E8%AF%84%E8%AE%BA/"/>
+      <category term="评论" scheme="https://blog.banqiao.me/tags/%E8%AF%84%E8%AE%BA/"/>
     
   </entry>
   
   <entry>
     <title>为什么互联网大佬们都开始扶贫了</title>
-    <link href="https://brnme.github.io/2017/12/why-big-it-companies-start-to-fupin/"/>
-    <id>https://brnme.github.io/2017/12/why-big-it-companies-start-to-fupin/</id>
+    <link href="https://blog.banqiao.me/2017/12/why-big-it-companies-start-to-fupin/"/>
+    <id>https://blog.banqiao.me/2017/12/why-big-it-companies-start-to-fupin/</id>
     <published>2017-12-04T16:27:49.000Z</published>
     <updated>2017-12-04T16:28:29.757Z</updated>
     
@@ -378,14 +478,14 @@
     </summary>
     
     
-      <category term="评论" scheme="https://brnme.github.io/tags/%E8%AF%84%E8%AE%BA/"/>
+      <category term="评论" scheme="https://blog.banqiao.me/tags/%E8%AF%84%E8%AE%BA/"/>
     
   </entry>
   
   <entry>
     <title>网文的路不好走</title>
-    <link href="https://brnme.github.io/2017/12/iwanttodobetter/"/>
-    <id>https://brnme.github.io/2017/12/iwanttodobetter/</id>
+    <link href="https://blog.banqiao.me/2017/12/iwanttodobetter/"/>
+    <id>https://blog.banqiao.me/2017/12/iwanttodobetter/</id>
     <published>2017-12-03T16:13:09.000Z</published>
     <updated>2017-12-04T04:18:06.868Z</updated>
     
@@ -402,7 +502,7 @@
     </summary>
     
     
-      <category term="网文世界" scheme="https://brnme.github.io/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/"/>
+      <category term="网文世界" scheme="https://blog.banqiao.me/tags/%E7%BD%91%E6%96%87%E4%B8%96%E7%95%8C/"/>
     
   </entry>
   
