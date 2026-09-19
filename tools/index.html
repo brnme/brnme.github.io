@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工具房 · 半樵的自制小工具</title>
+<meta name="description" content="半樵做出来的工具性页面收纳处：海报生成器、卡片生成器、邻里互助项目页。全部单文件离线可用。">
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   调色板 —— 与首页 index.html 同一套，想换配色改这里全页生效
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --c-bg:     #FAF7F0;   /* 页面底色：米白纸面 */
+  --c-yellow: #FFD02F;   /* 主色：柠檬黄 */
+  --c-purple: #8C52FF;   /* 强调：电紫 */
+  --c-red:    #FF5C4D;   /* 点缀：番茄红 */
+  --c-green:  #3EC1A8;   /* 点缀：青绿 */
+  --c-blue:   #4DA8FF;   /* 点缀：天蓝 */
+  --c-black:  #111111;   /* 描边与正文：纯黑 */
+  --c-white:  #FFFFFF;   /* 卡片底色 */
+  --border:   3px solid var(--c-black);
+  --shadow:   6px 6px 0 var(--c-black);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--c-bg); color: var(--c-black);
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  line-height: 1.75;
+  background-image: repeating-linear-gradient(45deg, transparent 0 23px, rgba(17,17,17,.035) 23px 24px);
+}
+.mono { font-family: ui-monospace, "JetBrains Mono", Consolas, monospace; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+a { color: inherit; }
+
+/* 通用组件 */
+.card { background: var(--c-white); border: var(--border); box-shadow: var(--shadow); }
+.btn {
+  display: inline-block; background: var(--c-yellow); border: var(--border);
+  box-shadow: var(--shadow); padding: 9px 20px; font-weight: 800;
+  text-decoration: none; transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn:hover { transform: translate(6px, 6px); box-shadow: 0 0 0 var(--c-black); }
+.btn-purple { background: var(--c-purple); color: #fff; }
+.btn-green  { background: var(--c-green); }
+
+.sec-title {
+  display: inline-block; border: var(--border); box-shadow: var(--shadow);
+  padding: 6px 22px; font-size: 1.4rem; font-weight: 900; letter-spacing: .08em;
+  background: var(--c-yellow); transform: rotate(-1.2deg); margin-bottom: 30px;
+}
+.sec-title.purple { background: var(--c-purple); color: #fff; }
+.sec-title.green  { background: var(--c-green); }
+.sec-title.blue   { background: var(--c-blue); }
+
+section { padding: 52px 0 18px; }
+
+/* 顶部导航条 */
+.topbar {
+  position: sticky; top: 0; z-index: 99; background: var(--c-black); color: #fff;
+  border-bottom: var(--border);
+}
+.topbar .wrap { display: flex; align-items: center; gap: 4px; overflow-x: auto; }
+.topbar a { color: #fff; text-decoration: none; font-weight: 700; font-size: .92rem; padding: 12px 14px; white-space: nowrap; }
+.topbar a:hover { background: var(--c-yellow); color: var(--c-black); }
+.topbar .logo { background: var(--c-yellow); color: var(--c-black); font-weight: 900; }
+
+/* Hero */
+.hero { padding: 76px 0 36px; position: relative; overflow: hidden; }
+.hero .big-title {
+  display: inline-block; font-size: clamp(2.6rem, 9vw, 5.2rem); font-weight: 900;
+  background: var(--c-yellow); border: var(--border); box-shadow: var(--shadow);
+  padding: 4px 26px; transform: rotate(-2deg); line-height: 1.2;
+}
+.hero .en { display: inline-block; font-size: clamp(1rem, 3.5vw, 1.6rem); font-weight: 900; color: transparent; -webkit-text-stroke: 2px var(--c-black); letter-spacing: .3em; margin: 22px 0 8px; }
+.hero .tagline { display: inline-block; background: var(--c-purple); color: #fff; border: var(--border); box-shadow: var(--shadow); padding: 8px 20px; font-weight: 800; transform: rotate(1deg); }
+.hero .sub { margin-top: 22px; max-width: 620px; }
+.doodle { position: absolute; z-index: -1; }
+
+/* 工具卡片网格 */
+.tools-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 26px; }
+.tool { padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+.tool .icon {
+  width: 52px; height: 52px; border: var(--border); background: var(--c-yellow);
+  display: flex; align-items: center; justify-content: center; font-size: 1.6rem;
+}
+.tool h3 { font-size: 1.15rem; font-weight: 900; line-height: 1.45; }
+.tool p  { font-size: .92rem; color: #333; flex-grow: 1; }
+.tool .tags { display: flex; flex-wrap: wrap; gap: 8px; font-size: .78rem; }
+.tool .tags span { border: 2px solid var(--c-black); padding: 1px 10px; font-weight: 700; background: #fff; }
+.tool .tags .t-g { background: var(--c-green); }
+.tool .tags .t-p { background: var(--c-purple); color: #fff; }
+
+/* 工坊说明 */
+.shed-note { margin-top: 44px; padding: 20px 26px; background: var(--c-yellow); font-size: .95rem; }
+.shed-note b { display: block; margin-bottom: 6px; font-size: 1.05rem; }
+
+/* 页脚跑马灯 */
+.marquee {
+  margin-top: 60px; background: var(--c-black); color: var(--c-yellow);
+  border-top: var(--border); border-bottom: var(--border);
+  overflow: hidden; white-space: nowrap; padding: 12px 0; font-weight: 900; letter-spacing: .12em;
+}
+.marquee-track { display: inline-flex; animation: scroll 22s linear infinite; }
+.marquee-track span { padding-right: 60px; font-size: 1.05rem; }
+@keyframes scroll { to { transform: translateX(-50%); } }
+footer .fine { text-align: center; font-size: .82rem; color: #555; padding: 26px 20px 40px; }
+
+@media (max-width: 720px) {
+  section { padding-top: 42px; }
+  .hero { padding-top: 52px; }
+}
+</style>
+</head>
+
+<body>
+<!--
+  ═══════════════════════════════════════════════════════════════
+  ▶ 工具房使用说明
+    - 每张工具卡是一个 <article class="card tool">，删卡=删整块
+    - 新收纳一个工具：把该工具的 .html 复制进本 tools/ 目录，
+      然后复制一张卡改 标题 / 描述 / href 即可
+    - 本目录页面是从原工作目录复制的副本；原稿改动后重新复制过来覆盖即可
+  ═══════════════════════════════════════════════════════════════
+-->
+
+<nav class="topbar">
+  <div class="wrap">
+    <a class="logo" href="./">工具房.TOOLS</a>
+    <a href="#fandazi">饭搭子系列</a>
+    <a href="#market">跳蚤市场系列</a>
+    <a href="#paotui">代跑腿系列</a>
+    <a href="#dazi">找搭子系列</a>
+    <a href="../">← 回首页</a>
+  </div>
+</nav>
+
+<!-- ═════════════════════════════════════════════════
+     ① Hero：工具房门头（改这里：标语与简介）
+     ═════════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="wrap">
+    <svg class="doodle" style="top:34px; right:7%; width:100px;" viewBox="0 0 100 100" aria-hidden="true">
+      <path d="M50 0 L61 35 L97 35 L68 57 L79 92 L50 70 L21 92 L32 57 L3 35 L39 35 Z" fill="#3EC1A8" stroke="#111" stroke-width="3"/>
+    </svg>
+    <div class="big-title">工具房</div>
+    <div class="en mono">T O O L &nbsp; S H E D</div>
+    <div><span class="tagline">自己做的小工具，自己收纳</span></div>
+    <p class="sub">这里收纳我做出来的工具性页面——填个表就能出海报、出卡片的那些小玩意。全部是单文件 HTML，离线双击即用，不联网、不注册、不留数据。</p>
+  </div>
+</header>
+
+<main>
+
+<!-- ═════════════════════════════════════════════════
+     ② 饭搭子系列（邻里互助共餐）
+     改这里：卡片增删、描述文字
+     ═════════════════════════════════════════════════ -->
+<section id="fandazi">
+  <div class="wrap">
+    <h2 class="sec-title">🥢 饭搭子系列</h2>
+    <div class="tools-grid">
+
+      <article class="card tool">
+        <div class="icon">🪪</div>
+        <h3>自我介绍卡生成器</h3>
+        <p>「求组织收留」专用：昵称、口味、忌口、拿手菜、饭量（一两到半斤的五档刻度条）、联系方式，填完实时出卡。导出高清 PNG，或复制文字版直接发群。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>三套配色</span></div>
+        <a class="btn" href="自我介绍生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">📢</div>
+        <h3>开桌倡议生成器</h3>
+        <p>发起人专用：填时间、地点、招募人数、招牌菜、人均 AA、桌规，生成竖版开桌海报。PNG 导出 + 群发文字版一键复制。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>竖版海报</span></div>
+        <a class="btn" href="开桌倡议生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">🍚</div>
+        <h3>邻里饭搭子 · 项目主页</h3>
+        <p>共餐计划的规则与流程一页看懂：为什么搭伙、五步发起、四角色轮值、AA 结算与规矩速查。上面两个生成器的「母页」。</p>
+        <div class="tags"><span>介绍页</span><span>无依赖</span></div>
+        <a class="btn btn-green" href="邻里饭搭子.html">看介绍页 →</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════════════
+     ③ 跳蚤市场系列（闲置循环）
+     改这里：卡片增删、描述文字
+     ═════════════════════════════════════════════════ -->
+<section id="market">
+  <div class="wrap">
+    <h2 class="sec-title purple">🧺 跳蚤市场系列</h2>
+    <div class="tools-grid">
+
+      <article class="card tool">
+        <div class="icon">🎪</div>
+        <h3>开市倡议生成器</h3>
+        <p>发起线下集市用：集市名称、日期时段、摊位费、主打品类、现场亮点（以物换物角 / 公益捐赠箱 / 儿童练摊区），生成 330px 竖版倡议海报 + 群发文字，内置四条市集规则。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>三套配色</span></div>
+        <a class="btn" href="开市倡议生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">🏷️</div>
+        <h3>闲置好物卡片生成器</h3>
+        <p>日常出闲置用：品名、成色、转让方式（低价 / 免送 / 以物换物）、瑕疵说明。瑕疵填了显示「已如实告知」琥珀警示，留空显示绿色「无已知瑕疵」声明，卡片底部固定售后口径。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>瑕疵联动</span></div>
+        <a class="btn" href="闲置好物卡片生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">♻️</div>
+        <h3>邻里跳蚤市场 · 项目主页</h3>
+        <p>「旧物有新主，邻里有温度」：发起规则、摊主线 / 淘货线双流程、交易规则、可卖禁卖清单、纠纷处理与 FAQ。同样也是上面两个生成器的「母页」。</p>
+        <div class="tags"><span>介绍页</span><span>无依赖</span></div>
+        <a class="btn btn-green" href="跳蚤市场.html">看介绍页 →</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════════════
+     ④ 代跑腿系列（邻里互助代跑腿）
+     改这里：卡片增删、描述文字
+     ═════════════════════════════════════════════════ -->
+<section id="paotui">
+  <div class="wrap">
+    <h2 class="sec-title blue">🛵 代跑腿系列</h2>
+    <div class="tools-grid">
+
+      <article class="card tool">
+        <div class="icon">🏃</div>
+        <h3>跑腿请求生成器</h3>
+        <p>求助人发单用：跑腿类型八类多选、答谢与垫付方式下拉选、请求约定一次勾选，填完实时出求助海报，导出高清 PNG 或一键复制群发文字版。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>三套配色</span></div>
+        <a class="btn" href="跑腿请求生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">📄</div>
+        <h3>委托授权书生成器</h3>
+        <p>代买代办写明白：委托事项、双方信息、费用答谢与附加条款（勾选自动带出完整条款文本），A4 授权文书与海报版一键切换、支持直接打印。附免责声明，不构成法律意见。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>文书可打印</span></div>
+        <a class="btn" href="委托授权书生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">🧭</div>
+        <h3>邻里代跑腿 · 项目主页</h3>
+        <p>非商业邻里代跑腿的规则一页看懂：答谢区间 ¥0–20、30 分钟生活圈、一对一私下协商、责任划分与安全边界。上面两个生成器的「母页」。</p>
+        <div class="tags"><span>介绍页</span><span>无依赖</span></div>
+        <a class="btn btn-green" href="代跑腿.html">看介绍页 →</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═════════════════════════════════════════════════
+     ⑤ 找搭子系列（同龄搭子 · 线下交友）
+     改这里：卡片增删、描述文字
+     ═════════════════════════════════════════════════ -->
+<section id="dazi">
+  <div class="wrap">
+    <h2 class="sec-title green">🤝 找搭子系列</h2>
+    <div class="tools-grid">
+
+      <article class="card tool">
+        <div class="icon">📣</div>
+        <h3>组局倡议生成器</h3>
+        <p>组局召集用：活动类型十二类多选、同龄段、活动强度、氛围标签，填完出竖版召集海报，PNG 导出 + 文字版一键复制。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>三套配色</span></div>
+        <a class="btn" href="组局倡议生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">🎯</div>
+        <h3>搭子名片生成器</h3>
+        <p>求组队专用：年龄段、想找什么搭子、常空时段、出勤频率、i 人 / e 人自评，填完出一张可直接转发的组队名片。</p>
+        <div class="tags"><span class="t-g">离线可用</span><span class="t-p">导出 PNG</span><span>三套配色</span></div>
+        <a class="btn" href="搭子名片生成器.html">打开工具 →</a>
+      </article>
+
+      <article class="card tool">
+        <div class="icon">👥</div>
+        <h3>线下找搭子 · 项目主页</h3>
+        <p>同龄搭子线下交友的规则一页看懂：3–8 人一局、人均 ¥0–50、30 分钟通勤圈、每月 2 局，发起人 / 领队 / 记账员 / 氛围官四角色轮值与月末复盘。上面两个生成器的「母页」。</p>
+        <div class="tags"><span>介绍页</span><span>无依赖</span></div>
+        <a class="btn btn-green" href="找搭子.html">看介绍页 →</a>
+      </article>
+
+    </div>
+
+    <!-- 工坊说明（不想要可整块删除） -->
+    <div class="card shed-note">
+      <b>🔧 工坊说明</b>
+      所有工具都是单文件 HTML：浏览器双击打开即用，无需安装、无需联网（导出 PNG 用的 html2canvas 也已收在本地）。文件复制自日常工作目录，若工具更新，覆盖 tools/ 下同名文件即可。
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- 页脚跑马灯：两个 span 内容保持一致 -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>★ 工具房 TOOL SHED ★ 填表 → 出图 → 发群 ★ 单文件 · 离线 · 零依赖 ★ 造个小工具，解决个小麻烦 ★ </span>
+    <span>★ 工具房 TOOL SHED ★ 填表 → 出图 → 发群 ★ 单文件 · 离线 · 零依赖 ★ 造个小工具，解决个小麻烦 ★ </span>
+  </div>
+</div>
+
+<footer>
+  <p class="fine"><a href="../">← 回到半樵首页</a><br>© 半樵 / brnme · 工具房</p>
+</footer>
+
+</body>
+</html>

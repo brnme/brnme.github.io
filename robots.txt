@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://brnme.github.io/sitemap.xml

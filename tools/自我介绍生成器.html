@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自我介绍卡生成器 · 邻里饭搭子</title>
+<meta name="description" content="填资料、生成一张好看的「饭搭子自我介绍卡」，保存图片发到业主群，求组织收留。">
+<style>
+  :root{
+    --bg:#FFF8F0;
+    --bg-soft:#FBEDDD;
+    --card:#FFFFFF;
+    --ink:#33261B;
+    --ink-soft:#75604E;
+    --brand:#D8491F;
+    --brand-deep:#A93410;
+    --brand-tint:#FBE7D6;
+    --green:#57793E;
+    --green-tint:#E9F0DF;
+    --amber:#A96F14;
+    --amber-tint:#F7ECD4;
+    --line:#F0DECB;
+    --radius:18px;
+    --shadow:0 10px 30px -18px rgba(120,70,30,.35);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,248,240,.9);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);text-decoration:none}
+  .brand svg{flex:none}
+  .brand small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em}
+  .nav-links{display:flex;gap:26px}
+  .nav-links a{color:var(--ink-soft);font-size:14.5px;font-weight:600;text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--brand)}
+  .nav-cta{display:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;
+    padding:8px 18px;border-radius:999px;text-decoration:none}
+
+  /* ---------- page head ---------- */
+  .page-head{padding:52px 0 8px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--brand-tint);color:var(--brand-deep);
+    font-size:13px;font-weight:700;letter-spacing:.06em;padding:6px 15px;border-radius:999px}
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand)}
+  h1{font-size:clamp(28px,3.6vw,40px);line-height:1.25;letter-spacing:.01em;font-weight:900;margin:16px 0 10px}
+  h1 em{font-style:normal;color:var(--brand)}
+  .lead{font-size:15.5px;color:var(--ink-soft);max-width:38em}
+
+  /* ---------- workspace ---------- */
+  .workspace{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:start;padding:30px 0 70px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+  .panel h3{font-size:16.5px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:9px}
+  .panel h3::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--brand)}
+  .panel:nth-child(2) h3::before{background:var(--green)}
+  .panel:nth-child(3) h3::before{background:var(--amber)}
+  .panel .p-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+
+  .f-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field{display:block}
+  .field.span2{grid-column:1 / -1}
+  .field>span{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:7px}
+  .field>span i{color:var(--brand);font-style:normal}
+  input[type=text],input[type=number]{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;background:#FFFDF9;
+    padding:10px 14px;font-size:14.5px;color:var(--ink);font-family:inherit;outline:none;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(216,73,31,.12)}
+  input::placeholder{color:#C9B49D}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1.5px solid var(--line);background:#FFFDF9;color:var(--ink-soft);
+    font-size:13.5px;font-weight:600;font-family:inherit;padding:6px 14px;border-radius:999px;
+    cursor:pointer;transition:all .13s;
+  }
+  .chip:hover{border-color:#E0B892}
+  .chip.on{background:var(--brand-tint);border-color:#E5A886;color:var(--brand-deep)}
+  .chip-extra{margin-top:9px}
+
+  /* portion */
+  .portions{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+  .portion{
+    border:1.5px solid var(--line);background:#FFFDF9;border-radius:13px;padding:10px 4px 9px;
+    font-family:inherit;cursor:pointer;text-align:center;transition:all .13s;color:var(--ink);
+  }
+  .portion b{display:block;font-size:13.5px;font-weight:800}
+  .portion em{display:block;font-style:normal;font-size:11px;line-height:1.45;color:var(--ink-soft);margin-top:2px}
+  .portion.on{background:var(--brand-tint);border-color:var(--brand)}
+  .portion.on em{color:var(--brand-deep)}
+
+  /* gender segmented */
+  .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .seg button{
+    border:1.5px solid var(--line);background:#FFFDF9;border-radius:11px;padding:9px 0;
+    font-size:13.5px;font-weight:700;font-family:inherit;color:var(--ink-soft);cursor:pointer;transition:all .13s;
+  }
+  .seg button.on{background:var(--brand-tint);border-color:var(--brand);color:var(--brand-deep)}
+
+  /* ---------- preview column ---------- */
+  .preview-sticky{position:sticky;top:88px}
+  .stage-wrap{
+    background:var(--bg-soft);border:1px dashed #E5C9A8;border-radius:22px;
+    padding:26px 18px;display:flex;justify-content:center;
+  }
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14.5px;
+    padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-family:inherit;text-decoration:none;
+    transition:transform .15s,box-shadow .15s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 12px 24px -12px rgba(216,73,31,.6);grid-column:1 / -1}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{color:var(--brand-deep);border:1.5px solid #E6C6A8;background:transparent}
+  .btn-ghost:hover{border-color:var(--brand)}
+  .tips{margin-top:14px;font-size:13px;color:var(--ink-soft);background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:11px 15px;display:flex;gap:9px;align-items:flex-start}
+  .tips svg{flex:none;margin-top:4px;color:var(--green)}
+
+  /* ---------- shared card pieces (captured area) ---------- */
+  .card{
+    width:330px;border-radius:22px;overflow:hidden;text-align:left;
+    --band1:#D8491F;--band2:#B23313;--deep:#A93410;--tint:#FBE7D6;--soft:#75604E;--paper:#FFFDF8;
+  }
+  .card.theme-olive{
+    --band1:#5F8142;--band2:#49662F;--deep:#49662F;--tint:#E9F0DF;--soft:#5E6B4E;--paper:#FCFDF6;
+  }
+  .card.theme-pumpkin{
+    --band1:#C9821E;--band2:#A86810;--deep:#A86810;--tint:#F7ECD4;--soft:#7A5E33;--paper:#FFFCF3;
+  }
+
+  /* ---------- 自我介绍卡 ---------- */
+  .c-band{
+    background:linear-gradient(140deg,var(--band1),var(--band2));
+    padding:16px 20px 18px;position:relative;color:#FFF6EA;
+  }
+  .c-band::after{
+    content:"";position:absolute;right:-44px;top:-52px;width:150px;height:150px;border-radius:50%;
+    background:rgba(255,255,255,.09);
+  }
+  .c-toprow{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+  .c-brandmark{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#FFE3CF}
+  .c-badge{
+    font-size:11.5px;font-weight:800;color:var(--band1);background:#FFF4E6;
+    padding:3px 11px;border-radius:999px;letter-spacing:.08em;
+  }
+  .c-id{display:flex;align-items:center;gap:14px;margin-top:15px;position:relative;z-index:1}
+  .c-avatar{
+    width:58px;height:58px;border-radius:50%;background:#FFF4E6;color:var(--band1);
+    font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:none;
+    border:2.5px solid rgba(255,255,255,.65);
+  }
+  .c-nick{font-size:24px;font-weight:900;line-height:1.25;color:#fff}
+  .c-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .c-tags span{
+    font-size:11px;font-weight:700;color:#FFE8D6;border:1px solid rgba(255,255,255,.4);
+    padding:1px 9px;border-radius:999px;
+  }
+  .c-body{background:var(--paper);padding:17px 20px 15px}
+  .c-row{display:flex;gap:12px;padding:6.5px 0;align-items:flex-start}
+  .c-label{
+    flex:none;width:58px;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.12em;
+    padding-top:2.5px;
+  }
+  .c-val{font-size:14px;color:var(--ink);line-height:1.55;flex:1}
+  .c-val .mute{color:#C4AD93}
+  .c-chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+  .c-chips i{
+    font-style:normal;font-size:12.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);padding:2.5px 11px;border-radius:999px;line-height:1.6;
+  }
+  .c-chips.dishes i{background:transparent;border:1.2px solid var(--band1);color:var(--deep);padding:1.5px 10px}
+  .c-ricebar{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+  .c-ricebar .bar{display:flex;gap:3.5px}
+  .c-ricebar .bar span{width:26px;height:9px;border-radius:3px;display:block}
+  .c-ricebar em{font-style:normal;font-size:12.5px;font-weight:700;color:var(--soft)}
+  .c-quote{
+    margin-top:12px;background:var(--tint);border-radius:12px;padding:11px 14px;
+    font-size:13px;color:var(--deep);line-height:1.7;font-weight:600;
+  }
+  .c-contact{
+    margin-top:12px;border-top:1px solid var(--tint);padding-top:11px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .c-contact span{font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.12em;flex:none}
+  .c-contact b{font-size:14px;font-weight:800;color:var(--ink);word-break:break-all}
+  .c-foot{
+    margin-top:12px;padding-top:10px;border-top:1px dashed var(--tint);
+    display:flex;align-items:center;justify-content:space-between;
+    font-size:10.5px;color:#BFA488;font-weight:600;letter-spacing:.06em;
+  }
+
+  footer{padding:40px 0 52px;text-align:center;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--line)}
+  footer .f-brand{font-weight:800;color:var(--ink);font-size:15px;margin-bottom:6px}
+
+  /* toast */
+  #toast{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#FFF6EA;font-size:13.5px;font-weight:600;
+    padding:11px 22px;border-radius:999px;opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .workspace{grid-template-columns:1fr}
+    .preview-sticky{position:static}
+    .preview-col{order:-1}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .nav-cta{display:inline-flex}
+    .page-head{padding:38px 0 4px}
+    .f-grid{grid-template-columns:1fr}
+    .portions{grid-template-columns:repeat(2,1fr)}
+    .actions{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="邻里饭搭子.html">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect width="30" height="30" rx="9" fill="#D8491F"/>
+        <path d="M7 14h16a8 8 0 0 1-16 0Z" fill="#FFF3E2"/>
+        <path d="M11 10.5c0-1.1.9-1.1.9-2.2M15 10.5c0-1.1.9-1.1.9-2.2M19 10.5c0-1.1.9-1.1.9-2.2" stroke="#FFF3E2" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>邻里饭搭子<small>自我介绍卡生成器</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="邻里饭搭子.html">返回规则主页</a>
+      <a href="开桌倡议生成器.html">我是发起人 →</a>
+    </nav>
+    <a class="nav-cta" href="开桌倡议生成器.html">发起人版</a>
+  </div>
+</header>
+
+<main>
+  <div class="container page-head">
+    <span class="eyebrow">求组织专用 · 生成 → 截图 → 发群</span>
+    <h1>一张<em>自我介绍卡</em>，让组织放心收你</h1>
+    <p class="lead">左边填资料，右边卡片实时更新。忌口、饭量都写清楚，主厨好买菜、组织好接人。完成后保存图片或直接截图，发到业主群、社交平台即可。</p>
+  </div>
+
+  <div class="container workspace">
+    <!-- =============== form =============== -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h3>基本盘</h3>
+        <p class="p-sub">组织筛选最看重的几项：距离、身份、忌口。</p>
+        <div class="f-grid">
+          <label class="field"><span>昵称 <i>*</i></span>
+            <input type="text" id="nick" maxlength="12" placeholder="怎么称呼你">
+          </label>
+          <label class="field"><span>年龄</span>
+            <input type="number" id="age" min="16" max="99" placeholder="如 27">
+          </label>
+          <div class="field"><span>性别</span>
+            <div class="seg" id="gender">
+              <button type="button" data-v="女">女生</button>
+              <button type="button" data-v="男">男生</button>
+              <button type="button" data-v="">保密</button>
+            </div>
+          </div>
+          <label class="field"><span>老家</span>
+            <input type="text" id="hometown" maxlength="20" placeholder="如 四川·成都">
+          </label>
+          <label class="field span2"><span>所在小区 / 坐标 <i>*</i></span>
+            <input type="text" id="location" maxlength="24" placeholder="如 阳光花园3期，步行圈写更清楚">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>吃饭这件事</h3>
+        <p class="p-sub">口味讲清楚，忌口别隐瞒——这是全桌的安全线。</p>
+        <div class="f-grid">
+          <div class="field span2"><span>口味偏好</span>
+            <div class="chips" id="taste">
+              <button type="button" class="chip">清淡</button>
+              <button type="button" class="chip">偏辣</button>
+              <button type="button" class="chip">无辣不欢</button>
+              <button type="button" class="chip">偏甜</button>
+              <button type="button" class="chip">咸鲜</button>
+              <button type="button" class="chip">偏酸</button>
+              <button type="button" class="chip">少油少盐</button>
+              <button type="button" class="chip">面食党</button>
+              <button type="button" class="chip">无肉不欢</button>
+            </div>
+            <input type="text" class="chip-extra" id="tasteExtra" maxlength="30" placeholder="还有别的？用、隔开，如 江湖菜、烧烤">
+          </div>
+          <label class="field span2"><span>忌口 / 过敏（没有可留空）</span>
+            <input type="text" id="avoid" maxlength="40" placeholder="如 香菜、海鲜、花生">
+          </label>
+          <label class="field span2"><span>拿手菜（会用 / 分开展示）</span>
+            <input type="text" id="dishes" maxlength="60" placeholder="如 红烧排骨 / 番茄牛腩 / 蒜蓉虾">
+          </label>
+          <div class="field span2"><span>饭量 · 按食堂两数申报，二两 ≈ 1 小碗</span>
+            <div class="portions" id="portion">
+              <button type="button" class="portion" data-v="1" data-label="一两" data-desc="约半碗 · 50g"><b>一两</b><em>≈半碗<br>50g</em></button>
+              <button type="button" class="portion on" data-v="2" data-label="二两" data-desc="约1小碗 · 100g"><b>二两</b><em>≈1小碗<br>100g</em></button>
+              <button type="button" class="portion" data-v="3" data-label="三两" data-desc="约1碗半 · 150g"><b>三两</b><em>≈1碗半<br>150g</em></button>
+              <button type="button" class="portion" data-v="4" data-label="四两" data-desc="约2碗 · 200g"><b>四两</b><em>≈2碗<br>200g</em></button>
+              <button type="button" class="portion" data-v="5" data-label="半斤起" data-desc="约2碗半起 · 250g+"><b>半斤起</b><em>≈2碗半起<br>250g+</em></button>
+            </div>
+          </div>
+          <div class="field span2"><span>常在时间</span>
+            <div class="chips" id="when">
+              <button type="button" class="chip">工作日晚餐</button>
+              <button type="button" class="chip">周末午餐</button>
+              <button type="button" class="chip">周末晚餐</button>
+              <button type="button" class="chip">工作日午餐</button>
+              <button type="button" class="chip">时间都行</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>加分项</h3>
+        <p class="p-sub">会修水电、能开车采购的邻居，组织抢着要。</p>
+        <div class="f-grid">
+          <div class="field span2"><span>一技之长（选填）</span>
+            <div class="chips" id="skills">
+              <button type="button" class="chip">会修水电</button>
+              <button type="button" class="chip">能开车采购</button>
+              <button type="button" class="chip">擅长烘焙</button>
+              <button type="button" class="chip">懂营养搭配</button>
+              <button type="button" class="chip">会拍照记录</button>
+              <button type="button" class="chip">记账一把好手</button>
+            </div>
+          </div>
+          <label class="field span2"><span>饭桌宣言（选填）</span>
+            <input type="text" id="slogan" maxlength="46" placeholder="如 想找步行15分钟内的饭搭子，一起买菜做饭AA">
+          </label>
+          <label class="field span2"><span>联系方式（选填，可写「群里联系我」）</span>
+            <input type="text" id="contact" maxlength="40" placeholder="如 微信 abc123，备注饭搭子">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =============== preview =============== -->
+    <div class="preview-col">
+      <div class="preview-sticky">
+        <div class="stage-wrap">
+          <div class="card" id="card"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSave">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
+            保存为图片
+          </button>
+          <button class="btn btn-ghost" id="btnTheme">换个配色</button>
+          <button class="btn btn-ghost" id="btnCopy">复制文字版</button>
+          <button class="btn btn-ghost" id="btnSample">填入示例</button>
+          <button class="btn btn-ghost" id="btnClear">清空重填</button>
+        </div>
+        <p class="tips">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 7.8v.2"/></svg>
+          保存的 PNG 与手动截图都适合发朋友圈、业主群；文字版适合直接粘贴到聊天框。公开资料注意隐私，联系方式自愿填写。
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="f-brand">邻里饭搭子 · 互助共餐</p>
+    <p>非商业邻里互助项目 · 一起买菜、轮流掌勺、饭后 AA · 2026</p>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script src="html2canvas.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s){ return document.querySelector(s); };
+
+  /* ---------- sample data ---------- */
+  var SAMPLE = {
+    nick:"小满", age:"27", gender:"女", hometown:"湖南 · 长沙", location:"阳光花园 3 期",
+    taste:["偏辣","清淡"], tasteExtra:"", avoid:"香菜、动物内脏",
+    dishes:"农家小炒肉 / 番茄牛腩 / 蒜蓉虾", portion:"2",
+    when:["工作日晚餐","周末午餐"], skills:["能开车采购","擅长烘焙"],
+    slogan:"想找步行15分钟内的饭搭子，一起买菜做饭、饭后AA～",
+    contact:"微信 xiaoman0521（备注：饭搭子）"
+  };
+
+  /* ---------- chip helpers ---------- */
+  function bindChips(id){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest(".chip");
+      if(b){ b.classList.toggle("on"); render(); }
+    });
+  }
+  function bindSeg(id, single){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest("button");
+      if(!b) return;
+      if(single){
+        box.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+        b.classList.add("on");
+      }else{
+        b.classList.toggle("on");
+      }
+      render();
+    });
+  }
+  function chipValues(id){
+    return Array.prototype.map.call(
+      document.querySelectorAll("#"+id+" .chip.on"),
+      function(b){ return b.textContent.trim(); }
+    );
+  }
+  function setChips(id, values){
+    document.querySelectorAll("#"+id+" .chip").forEach(function(b){
+      b.classList.toggle("on", values.indexOf(b.textContent.trim()) >= 0);
+    });
+  }
+
+  /* ---------- state read ---------- */
+  function getState(){
+    var gBtn = document.querySelector("#gender button.on");
+    var pBtn = document.querySelector("#portion button.on");
+    return {
+      nick: $("#nick").value.trim(),
+      age: $("#age").value.trim(),
+      gender: gBtn ? gBtn.dataset.v : "",
+      hometown: $("#hometown").value.trim(),
+      location: $("#location").value.trim(),
+      taste: chipValues("taste").concat(splitList($("#tasteExtra").value)),
+      avoid: $("#avoid").value.trim(),
+      dishes: splitList($("#dishes").value),
+      portion: pBtn ? { v: +pBtn.dataset.v, label: pBtn.dataset.label, desc: pBtn.dataset.desc } : null,
+      when: chipValues("when"),
+      skills: chipValues("skills"),
+      slogan: $("#slogan").value.trim(),
+      contact: $("#contact").value.trim()
+    };
+  }
+  function splitList(s){
+    return s.split(/[\/、,，\n]/).map(function(x){ return x.trim(); }).filter(Boolean);
+  }
+  function esc(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  /* ---------- rice bar (5 段刻度，按两数) ---------- */
+  function riceBarHTML(filled, themeDeep){
+    var segs = "";
+    for(var i=1;i<=5;i++){
+      segs += '<span style="background:' + (i<=filled ? themeDeep : '#E7DAC6') + '"></span>';
+    }
+    return '<span class="bar">'+segs+'</span>';
+  }
+
+  /* ---------- render card ---------- */
+  var themeIdx = 0, THEMES = ["", "theme-olive", "theme-pumpkin"], DEEPS = ["#A93410", "#49662F", "#A86810"];
+
+  function rowHTML(label, valHTML){
+    return '<div class="c-row"><span class="c-label">'+label+'</span>'+valHTML+'</div>';
+  }
+  function chipsHTML(arr, dish){
+    if(!arr.length) return "";
+    return '<div class="c-chips'+(dish?' dishes':'')+'">'+arr.map(function(x){
+      return '<i>'+(dish?'★ ':'')+esc(x)+'</i>'; }).join("")+'</div>';
+  }
+  function valHTML(s){
+    return '<div class="c-val">'+esc(s)+'</div>';
+  }
+
+  function render(){
+    var s = getState();
+    var card = $("#card");
+    card.className = "card " + THEMES[themeIdx];
+    var deep = DEEPS[themeIdx];
+
+    var tags = [];
+    if(s.gender) tags.push(s.gender);
+    if(s.age) tags.push(s.age + "岁");
+    if(s.location) tags.push("坐标 " + s.location);
+
+    var rows = "";
+    if(s.hometown) rows += rowHTML("老家", valHTML(s.hometown));
+    if(s.taste.length) rows += rowHTML("口味", chipsHTML(s.taste));
+    if(s.avoid) rows += rowHTML("忌口", valHTML(s.avoid));
+    if(s.dishes.length) rows += rowHTML("招牌菜", chipsHTML(s.dishes, true));
+    if(s.portion){
+      rows += rowHTML("饭量", '<div class="c-val c-ricebar">'+riceBarHTML(s.portion.v, deep)+
+        '<em>'+esc(s.portion.label)+'（'+esc(s.portion.desc)+'）</em></div>');
+    }
+    if(s.when.length) rows += rowHTML("同桌时间", chipsHTML(s.when));
+    if(s.skills.length) rows += rowHTML("加分项", chipsHTML(s.skills));
+
+    card.innerHTML =
+      '<div class="c-band">'+
+        '<div class="c-toprow">'+
+          '<span class="c-brandmark">'+
+            '<svg width="20" height="20" viewBox="0 0 30 30" fill="none"><rect width="30" height="30" rx="9" fill="#FFF3E2" opacity=".92"/><path d="M7 14h16a8 8 0 0 1-16 0Z" fill="'+deep+'"/><path d="M11 10.5c0-1.1.9-1.1.9-2.2M15 10.5c0-1.1.9-1.1.9-2.2M19 10.5c0-1.1.9-1.1.9-2.2" stroke="'+deep+'" stroke-width="1.6" stroke-linecap="round"/></svg>'+
+            '邻里饭搭子 · 求组织</span>'+
+          '<span class="c-badge">求饭搭子</span>'+
+        '</div>'+
+        '<div class="c-id">'+
+          '<div class="c-avatar">'+ esc(s.nick ? s.nick.charAt(0) : "饭") +'</div>'+
+          '<div>'+
+            '<div class="c-nick">'+ (s.nick ? esc(s.nick) : '<span style="opacity:.75">你的昵称</span>') +'</div>'+
+            (tags.length ? '<div class="c-tags">'+tags.map(function(t){return '<span>'+esc(t)+'</span>';}).join("")+'</div>' : '')+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="c-body">'+
+        rows +
+        (s.slogan ? '<div class="c-quote">“'+esc(s.slogan)+'”</div>' : '')+
+        '<div class="c-contact"><span>联系我</span><b>'+(s.contact ? esc(s.contact) : '<span class="mute" style="font-weight:600">群里联系我</span>')+'</b></div>'+
+        '<div class="c-foot"><span>非商业邻里互助</span><span>一起买菜 · 轮流掌勺 · 饭后AA</span></div>'+
+      '</div>';
+  }
+
+  /* ---------- text version ---------- */
+  function buildText(){
+    var s = getState();
+    var L = [];
+    L.push("【求饭搭子 · 自我介绍】");
+    var head = s.nick || "（昵称）";
+    if(s.gender || s.age) head += "｜" + [s.gender, s.age && s.age+"岁"].filter(Boolean).join(" · ");
+    L.push(head);
+    if(s.location) L.push("坐标：" + s.location + (s.hometown ? "（老家 " + s.hometown + "）" : ""));
+    if(s.taste.length) L.push("口味：" + s.taste.join("、"));
+    if(s.avoid) L.push("忌口：" + s.avoid);
+    if(s.dishes.length) L.push("拿手菜：" + s.dishes.join(" / "));
+    if(s.portion) L.push("饭量：" + s.portion.label + "（" + s.portion.desc + "）");
+    if(s.when.length) L.push("同桌时间：" + s.when.join("、"));
+    if(s.skills.length) L.push("一技之长：" + s.skills.join("、"));
+    if(s.slogan) L.push("一句话：" + s.slogan);
+    L.push("联系：" + (s.contact || "群里联系我"));
+    L.push("—— 来自「邻里饭搭子」非商业互助共餐计划");
+    return L.join("\n");
+  }
+
+  /* ---------- actions ---------- */
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+  }
+
+  $("#btnTheme").addEventListener("click", function(){
+    themeIdx = (themeIdx + 1) % THEMES.length;
+    render();
+  });
+
+  $("#btnCopy").addEventListener("click", function(){
+    var text = buildText();
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); toast("文字版已复制，去粘贴吧"); }
+      catch(e){ toast("复制失败，请长按卡片文字手动复制"); }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast("文字版已复制，去粘贴吧"); }, fallback);
+    }else fallback();
+  });
+
+  $("#btnSample").addEventListener("click", function(){
+    fill(SAMPLE); render(); toast("已填入示例，改成你的资料吧");
+  });
+  $("#btnClear").addEventListener("click", function(){
+    fillEmpty(); render(); toast("已清空，开始填你的资料");
+  });
+
+  $("#btnSave").addEventListener("click", function(){
+    var btn = this, card = $("#card");
+    var nick = getState().nick;
+    if(typeof html2canvas === "undefined"){
+      toast("截图组件没加载成功，请直接对卡片截图"); return;
+    }
+    btn.disabled = true; btn.style.opacity = .7;
+    html2canvas(card, { scale: 2, backgroundColor: null, logging: false }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "饭搭子自我介绍-" + (nick || "未命名") + ".png";
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+        btn.disabled = false; btn.style.opacity = 1;
+        toast("图片已保存，发到群里等组织接你～");
+      }, "image/png");
+    }).catch(function(){
+      btn.disabled = false; btn.style.opacity = 1;
+      toast("自动保存失败，请直接对卡片截图");
+    });
+  });
+
+  /* ---------- fill helpers ---------- */
+  function fill(d){
+    $("#nick").value = d.nick || "";
+    $("#age").value = d.age || "";
+    $("#hometown").value = d.hometown || "";
+    $("#location").value = d.location || "";
+    $("#tasteExtra").value = d.tasteExtra || "";
+    $("#avoid").value = d.avoid || "";
+    $("#dishes").value = d.dishes || "";
+    $("#slogan").value = d.slogan || "";
+    $("#contact").value = d.contact || "";
+    setChips("taste", d.taste || []);
+    setChips("when", d.when || []);
+    setChips("skills", d.skills || []);
+    document.querySelectorAll("#gender button").forEach(function(b){
+      b.classList.toggle("on", b.dataset.v === (d.gender || ""));
+    });
+    document.querySelectorAll("#portion button").forEach(function(b){
+      b.classList.toggle("on", b.dataset.v === (d.portion || ""));
+    });
+  }
+  function fillEmpty(){
+    fill({ gender:"", portion:"" });
+  }
+
+  /* ---------- wire up ---------- */
+  ["nick","age","hometown","location","tasteExtra","avoid","dishes","slogan","contact"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", render);
+  });
+  bindChips("taste"); bindChips("when"); bindChips("skills");
+  bindSeg("gender", true);
+  bindSeg("portion", true);
+
+  fill(SAMPLE);
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>委托授权书生成器 · 邻里跑腿</title>
+<meta name="description" content="填双方信息、委托事项和责任约定，实时生成邻里互助「委托授权书」：可打印签字各留一份，也可存图或复制文字版。非商业邻里互助简易模板。">
+<style>
+  :root{
+    --bg:#F5F9FC;
+    --bg-soft:#EDF4FA;
+    --card:#FFFFFF;
+    --ink:#1C2B3A;
+    --ink-soft:#5E7185;
+    --brand:#2B6CB0;
+    --brand-deep:#1E4E8C;
+    --brand-tint:#E3EDF7;
+    --coral:#C25B45;
+    --coral-tint:#F9E8E2;
+    --amber:#A86810;
+    --amber-tint:#F7ECD4;
+    --teal:#4A665C;
+    --teal-tint:#E2ECE8;
+    --line:#DCE7F1;
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,249,252,.9);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);text-decoration:none}
+  .brand svg{flex:none}
+  .brand small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em}
+  .nav-links{display:flex;gap:26px}
+  .nav-links a{color:var(--ink-soft);font-size:14.5px;font-weight:600;text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--brand)}
+  .nav-cta{display:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;
+    padding:8px 18px;border-radius:999px;text-decoration:none}
+
+  /* ---------- page head ---------- */
+  .page-head{padding:52px 0 8px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--brand-tint);color:var(--brand-deep);
+    font-size:13px;font-weight:700;letter-spacing:.06em;padding:6px 15px;border-radius:999px}
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand)}
+  h1{font-size:clamp(28px,3.6vw,40px);line-height:1.25;letter-spacing:.01em;font-weight:900;margin:16px 0 10px}
+  h1 em{font-style:normal;color:var(--brand)}
+  .lead{font-size:15.5px;color:var(--ink-soft);max-width:38em}
+
+  /* ---------- workspace ---------- */
+  .workspace{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:start;padding:30px 0 70px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+  .panel h3{font-size:16.5px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:9px}
+  .panel h3::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--brand)}
+  .panel:nth-child(2) h3::before{background:var(--coral)}
+  .panel:nth-child(3) h3::before{background:var(--teal)}
+  .panel .p-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+
+  .f-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field{display:block}
+  .field.span2{grid-column:1 / -1}
+  .field>span{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:7px}
+  .field>span i{color:var(--coral);font-style:normal}
+  .field>span em{color:#8296AB;font-style:normal;font-weight:600}
+  input[type=text],select{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;background:#FBFDFF;
+    padding:10px 14px;font-size:14.5px;color:var(--ink);font-family:inherit;outline:none;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  select{appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' stroke='%23748AA3' stroke-width='1.8' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;
+  }
+  input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(43,108,176,.14)}
+  input::placeholder{color:#9FB4C9}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1.5px solid var(--line);background:#FBFDFF;color:var(--ink-soft);
+    font-size:13.5px;font-weight:600;font-family:inherit;padding:6px 14px;border-radius:999px;
+    cursor:pointer;transition:all .13s;
+  }
+  .chip:hover{border-color:#A9C6E4}
+  .chip.on{background:var(--brand-tint);border-color:#9FBEE0;color:var(--brand-deep)}
+  .chip-extra{margin-top:9px}
+
+  /* ---------- preview column ---------- */
+  .preview-sticky{position:sticky;top:88px}
+  .view-tabs{
+    display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg-soft);
+    border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:12px;
+  }
+  .view-tab{
+    border:none;background:transparent;font-family:inherit;font-size:13.5px;font-weight:700;
+    color:var(--ink-soft);padding:8px 0;border-radius:999px;cursor:pointer;transition:all .15s;
+  }
+  .view-tab.on{background:var(--brand);color:#fff;box-shadow:0 8px 16px -8px rgba(43,108,176,.6)}
+  .stage-wrap{
+    background:var(--bg-soft);border:1px dashed #C2D6E9;border-radius:22px;
+    padding:26px 18px;display:flex;justify-content:center;
+  }
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14.5px;
+    padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-family:inherit;text-decoration:none;
+    transition:transform .15s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 12px 24px -12px rgba(43,108,176,.6);grid-column:1 / -1}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{color:var(--brand-deep);border:1.5px solid #C5D8EC;background:transparent}
+  .btn-ghost:hover{border-color:var(--brand)}
+  .tips{margin-top:14px;font-size:13px;color:var(--ink-soft);background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:11px 15px;display:flex;gap:9px;align-items:flex-start}
+  .tips svg{flex:none;margin-top:4px;color:var(--teal)}
+
+  /* ---------- doc（文书版） ---------- */
+  .doc{
+    width:440px;background:#fff;color:var(--ink);border-radius:14px;
+    box-shadow:0 10px 28px -16px rgba(23,58,110,.28);
+    padding:26px 28px 22px;border-top:5px solid var(--brand);
+  }
+  .d-top{display:flex;justify-content:space-between;align-items:center;
+    font-size:10px;font-weight:700;color:var(--ink-soft);letter-spacing:.08em;margin-bottom:14px}
+  .d-title{text-align:center;font-size:24px;font-weight:900;letter-spacing:.3em;padding-left:.3em;color:var(--brand-deep)}
+  .d-sub{text-align:center;font-size:10.5px;color:var(--ink-soft);letter-spacing:.18em;margin-top:4px}
+  .d-sep{width:56px;height:2px;background:var(--brand);margin:12px auto 14px}
+  .d-para{font-size:13px;line-height:2;padding:1px 0}
+  .d-para .d-info{color:var(--ink-soft)}
+  .d-intro{margin-top:4px}
+  .d-clause{margin-top:9px;font-size:13px;line-height:2}
+  .d-clause>b{font-weight:800}
+  .d-line{display:block}
+  .d-sign{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;
+    padding-top:18px;border-top:1px dashed #C9D9E8}
+  .d-sign-item{font-size:12.5px;line-height:2.4;font-weight:600}
+  .d-note{margin-top:16px;border-top:1px solid #E4EDF5;padding-top:10px;
+    font-size:10.5px;color:#8296AB;line-height:1.8}
+
+  /* ---------- poster（海报版） ---------- */
+  .poster{
+    width:330px;border-radius:22px;overflow:hidden;text-align:left;
+    --band1:#2B6CB0;--band2:#1F5494;--deep:#1E4E8C;--tint:#E3EDF7;--soft:#5E7185;--paper:#FBFDFF;
+  }
+  .p-band{
+    background:linear-gradient(150deg,var(--band1),var(--band2));
+    padding:18px 22px 20px;position:relative;color:#EAF2FB;
+  }
+  .p-band::after{
+    content:"";position:absolute;right:-52px;top:-60px;width:170px;height:170px;border-radius:50%;
+    background:rgba(255,255,255,.09);
+  }
+  .p-band::before{
+    content:"";position:absolute;right:26px;bottom:-64px;width:120px;height:120px;border-radius:50%;
+    background:rgba(255,255,255,.07);
+  }
+  .p-toprow{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+  .p-brandmark{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#D6E6F7}
+  .p-stamp{
+    font-size:11px;font-weight:800;color:var(--band1);background:#F0F6FC;
+    padding:3px 10px;border-radius:8px;letter-spacing:.1em;
+  }
+  .p-title{
+    margin-top:20px;font-size:38px;font-weight:900;letter-spacing:.12em;line-height:1.15;
+    color:#fff;position:relative;z-index:1;
+  }
+  .p-sub{margin-top:6px;font-size:13.5px;font-weight:600;color:#D6E6F7;letter-spacing:.05em;position:relative;z-index:1}
+  .p-divider{display:flex;align-items:center;gap:10px;margin-top:16px;position:relative;z-index:1}
+  .p-divider span{flex:1;height:1px;background:rgba(234,242,251,.45)}
+  .p-body{background:var(--paper);padding:16px 22px 18px}
+  .p-row{display:flex;gap:14px;padding:7.5px 0;border-bottom:1px solid var(--tint);align-items:baseline}
+  .p-row:last-child{border-bottom:none}
+  .p-label{flex:none;width:64px;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.14em}
+  .p-val{font-size:14px;font-weight:700;color:var(--ink);line-height:1.55;flex:1}
+  .p-val small{display:block;font-size:11px;font-weight:600;color:#93A9BE}
+  .p-block{margin-top:11px}
+  .p-block>b{display:block;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.14em;margin-bottom:7px}
+  .p-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .p-chips i{
+    font-style:normal;font-size:12.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);padding:2.5px 11px;border-radius:999px;line-height:1.6;
+  }
+  .p-chips.acts i{background:transparent;border:1.2px solid var(--band1);color:var(--deep);padding:1.5px 10px}
+  .p-rules{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .p-rules div{
+    display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);border-radius:9px;padding:6px 10px;line-height:1.5;
+  }
+  .p-rules div svg{flex:none}
+  .p-rules div.wide{grid-column:1 / -1}
+  .p-quote{
+    margin-top:14px;padding:0 2px;font-size:13px;color:var(--deep);font-weight:700;line-height:1.7;
+  }
+  .p-cta{
+    background:linear-gradient(150deg,var(--band1),var(--band2));
+    padding:16px 22px 17px;color:#EAF2FB;position:relative;overflow:hidden;
+  }
+  .p-cta::after{
+    content:"";position:absolute;right:-40px;bottom:-70px;width:140px;height:140px;border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  .p-cta span{display:block;font-size:11.5px;font-weight:700;letter-spacing:.1em;color:#D6E6F7}
+  .p-cta b{display:block;font-size:16.5px;font-weight:900;margin-top:3px;color:#fff}
+  .p-cta i{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:#D6E6F7;margin-top:3px}
+  .p-foot{
+    background:#16283F;color:#A9BED6;text-align:center;font-size:10.5px;font-weight:600;
+    letter-spacing:.08em;padding:9px 12px;
+  }
+
+  footer{padding:40px 0 52px;text-align:center;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--line)}
+  footer .f-brand{font-weight:800;color:var(--ink);font-size:15px;margin-bottom:6px}
+
+  #toast{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#EAF2FB;font-size:13.5px;font-weight:600;
+    padding:11px 22px;border-radius:999px;opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .workspace{grid-template-columns:1fr}
+    .preview-sticky{position:static}
+    .preview-col{order:-1}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .nav-cta{display:inline-flex}
+    .page-head{padding:38px 0 4px}
+    .f-grid{grid-template-columns:1fr}
+    .actions{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:520px){
+    .stage-wrap{padding:14px 10px}
+    .doc{width:100%}
+  }
+
+  /* ---------- print：只输出文书版 ---------- */
+  @media print{
+    @page{margin:18mm 16mm}
+    body{background:#fff}
+    .site-header,.page-head,.form-col,.view-tabs,.actions,.tips,footer,#toast{display:none!important}
+    .workspace{display:block;padding:0}
+    .preview-sticky{position:static}
+    .stage-wrap{display:block;background:none;border:none;border-radius:0;padding:0}
+    #posterWrap{display:none!important}
+    #docWrap{display:block!important}
+    .doc{width:100%!important;max-width:760px;margin:0 auto;box-shadow:none;border-radius:0}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="代跑腿.html">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect width="30" height="30" rx="9" fill="#2B6CB0"/>
+        <circle cx="10.5" cy="10.5" r="3.6" fill="#EAF2FB"/>
+        <path d="M4.6 21.6a6 6 0 0 1 11.8 0Z" fill="#EAF2FB"/>
+        <rect x="16.5" y="13.2" width="9" height="8.4" rx="1.6" fill="#F5C05A"/>
+        <path d="M16.5 17.4h9" stroke="#2B6CB0" stroke-width="1.6"/>
+      </svg>
+      <span>邻里跑腿<small>委托授权书生成器</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="代跑腿.html">返回规则主页</a>
+      <a href="跑腿请求生成器.html">也要发请求？→</a>
+    </nav>
+    <a class="nav-cta" href="跑腿请求生成器.html">请求版</a>
+  </div>
+</header>
+
+<main>
+  <div class="container page-head">
+    <span class="eyebrow">双方达成意向后 · 生成 → 打印 → 签字各执一份</span>
+    <h1>一纸<em>委托授权书</em>，把约定落成白纸黑字</h1>
+    <p class="lead">填好双方信息、委托事项和责任约定，右边实时生成文书。可打印签字各留一份，也可存图或复制文字版留档在聊天记录里。</p>
+  </div>
+
+  <div class="container workspace">
+    <!-- =============== form =============== -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h3>双方信息</h3>
+        <p class="p-sub">一式两份的前提：双方都写清楚；称呼可用「房号 · 昵称」。</p>
+        <div class="f-grid">
+          <label class="field"><span>委托人称呼 <i>*</i></span>
+            <input type="text" id="cName" maxlength="20" placeholder="如 5栋·陈阿姨">
+          </label>
+          <label class="field"><span>委托人联系方式 <em>选填</em></span>
+            <input type="text" id="cContact" maxlength="40" placeholder="如 微信 alann088">
+          </label>
+          <label class="field span2"><span>委托人身份证号 <em>选填 · 涉及贵重物品建议填写</em></span>
+            <input type="text" id="cId" maxlength="18" placeholder="留空则签署时手写补上">
+          </label>
+          <label class="field"><span>受托人称呼 <i>*</i></span>
+            <input type="text" id="rName" maxlength="20" placeholder="如 2栋·小周">
+          </label>
+          <label class="field"><span>受托人联系方式 <em>选填</em></span>
+            <input type="text" id="rContact" maxlength="40" placeholder="如 微信 zhou_run">
+          </label>
+          <label class="field span2"><span>受托人身份证号 <em>选填 · 涉及贵重物品建议填写</em></span>
+            <input type="text" id="rId" maxlength="18" placeholder="留空则签署时手写补上">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>委托事项</h3>
+        <p class="p-sub">授权范围写得越窄越好：只授权这一件事。</p>
+        <div class="f-grid">
+          <div class="field span2"><span>事项类型</span>
+            <div class="chips" id="taskType">
+              <button type="button" class="chip on">代取物品</button>
+              <button type="button" class="chip">代购物品</button>
+              <button type="button" class="chip">代缴费用</button>
+              <button type="button" class="chip">代排队办事</button>
+              <button type="button" class="chip">宠物照看</button>
+              <button type="button" class="chip">其他互助小事</button>
+            </div>
+            <input type="text" class="chip-extra" id="taskTypeExtra" maxlength="30" placeholder="还有别的？用、隔开，如 代打印、代寄快递">
+          </div>
+          <label class="field span2"><span>事项描述 <i>*</i></span>
+            <input type="text" id="taskDesc" maxlength="80" placeholder="如 代取丰巢E-09柜快递一件，送至3期5栋门口鞋柜上">
+          </label>
+          <label class="field span2"><span>涉及物品或金额 <em>选填</em></span>
+            <input type="text" id="taskValue" maxlength="40" placeholder="如 快递一件 · 约值60元 / 代买菜约50元">
+          </label>
+          <div class="field span2"><span>委托权限</span>
+            <div class="chips" id="powers">
+              <button type="button" class="chip on">仅限本委托事项</button>
+              <button type="button" class="chip">代为签收</button>
+              <button type="button" class="chip">代为付款 · 垫付报销</button>
+              <button type="button" class="chip">代为领取与转交</button>
+            </div>
+          </div>
+          <label class="field span2"><span>委托期限</span>
+            <input type="text" id="period" maxlength="30" list="periodList" placeholder="如 即日 · 一次性事项">
+            <datalist id="periodList">
+              <option value="即日 · 一次性事项"></option>
+              <option value="本周内有效"></option>
+              <option value="自 2026 年 9 月 8 日 至 9 月 15 日"></option>
+            </datalist>
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>答谢与责任</h3>
+        <p class="p-sub">核心条款已按规则速查写好（有约从约 · 无约风险委托人承担），附加条款按需勾选。</p>
+        <div class="f-grid">
+          <label class="field"><span>答谢约定</span>
+            <input type="text" id="thanks" maxlength="30" placeholder="如 红包 ¥5 · 办完即结">
+          </label>
+          <label class="field"><span>垫付与报销</span>
+            <select id="advance">
+              <option selected>不涉及垫付</option>
+              <option>受托人垫付 · 凭票据实报实销</option>
+              <option>委托人预先支付 · 多退少补</option>
+            </select>
+          </label>
+          <div class="field span2"><span>附加条款（默认不加，按需勾选）</span>
+            <div class="chips" id="extras">
+              <button type="button" class="chip">受托人故意或重大过失造成的损失除外</button>
+              <button type="button" class="chip">本次委托为邻里互助 · 非商业性质</button>
+              <button type="button" class="chip">本授权书一式两份 · 双方各执一份</button>
+            </div>
+          </div>
+          <label class="field span2"><span>签署日期 <em>选填 · 留空则签署时手写</em></span>
+            <input type="text" id="signDate" maxlength="20" placeholder="如 2026年9月8日">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =============== preview =============== -->
+    <div class="preview-col">
+      <div class="preview-sticky">
+        <div class="view-tabs">
+          <button type="button" class="view-tab on" id="tabDoc">文书版 · 可打印签字</button>
+          <button type="button" class="view-tab" id="tabPoster">海报版 · 发群留档</button>
+        </div>
+        <div class="stage-wrap">
+          <div id="docWrap"><div class="doc" id="doc"></div></div>
+          <div id="posterWrap" style="display:none"><div class="poster" id="poster"></div></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSave">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
+            保存当前预览为图片
+          </button>
+          <button class="btn btn-ghost" id="btnPrint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V4h10v4"/><path d="M7 17H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1"/></svg>
+            打印文书
+          </button>
+          <button class="btn btn-ghost" id="btnCopy">复制文字版</button>
+          <button class="btn btn-ghost" id="btnSample">填入示例</button>
+          <button class="btn btn-ghost" id="btnClear">清空重填</button>
+        </div>
+        <p class="tips">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 7.8v.2"/></svg>
+          本文书为邻里互助简易约定模板，不构成法律意见；涉及大额财物或重要证件的事项，请谨慎委托或咨询专业人士。「打印」始终输出文书版。
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="f-brand">邻里跑腿 · 邻里互助代跑腿</p>
+    <p>非商业邻里互助项目 · 有约从约 · 无约风险委托人自担 · 2026</p>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script src="html2canvas.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s){ return document.querySelector(s); };
+
+  var SAMPLE = {
+    cName:"5栋·陈阿姨", cContact:"微信 alann088", cId:"",
+    rName:"2栋·小周", rContact:"微信 zhou_run", rId:"",
+    taskType:["代取物品"], taskTypeExtra:"",
+    taskDesc:"代取丰巢E-09柜快递一件，送至3期5栋门口鞋柜上",
+    taskValue:"快递一件 · 约值 60 元",
+    powers:["仅限本委托事项","代为签收"],
+    period:"即日 · 一次性事项",
+    thanks:"红包 ¥5 · 办完即结", advance:"不涉及垫付",
+    extras:["本次委托为邻里互助 · 非商业性质","本授权书一式两份 · 双方各执一份"],
+    signDate:"2026年9月8日"
+  };
+
+  var EXTRA_CLAUSES = {
+    "受托人故意或重大过失造成的损失除外":"因受托人故意或重大过失造成委托人损失的，不受前款风险自担约定的限制，由受托人依法承担相应责任。",
+    "本次委托为邻里互助 · 非商业性质":"双方确认本次委托为邻里互助性质，不构成雇佣、劳务或经营关系。",
+    "本授权书一式两份 · 双方各执一份":"本授权书一式两份，委托人、受托人各执一份，自双方签字之日起生效。"
+  };
+
+  function bindChips(id){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest(".chip");
+      if(b){ b.classList.toggle("on"); render(); }
+    });
+  }
+  function chipValues(id){
+    return Array.prototype.map.call(
+      document.querySelectorAll("#"+id+" .chip.on"),
+      function(b){ return b.textContent.trim(); }
+    );
+  }
+  function setChips(id, values){
+    document.querySelectorAll("#"+id+" .chip").forEach(function(b){
+      b.classList.toggle("on", values.indexOf(b.textContent.trim()) >= 0);
+    });
+  }
+  function splitList(s){
+    return s.split(/[\/、,，\n]/).map(function(x){ return x.trim(); }).filter(Boolean);
+  }
+  function esc(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function getState(){
+    return {
+      cName: $("#cName").value.trim(), cContact: $("#cContact").value.trim(), cId: $("#cId").value.trim(),
+      rName: $("#rName").value.trim(), rContact: $("#rContact").value.trim(), rId: $("#rId").value.trim(),
+      taskType: chipValues("taskType").concat(splitList($("#taskTypeExtra").value)),
+      taskDesc: $("#taskDesc").value.trim(),
+      taskValue: $("#taskValue").value.trim(),
+      powers: chipValues("powers"),
+      period: $("#period").value.trim(),
+      thanks: $("#thanks").value.trim(),
+      advance: $("#advance").value,
+      extras: chipValues("extras"),
+      signDate: $("#signDate").value.trim()
+    };
+  }
+
+  /* ---------- 文书版 ---------- */
+  function partyLine(label, name, contact, id){
+    var info = [];
+    if(contact) info.push("联系方式：" + contact);
+    if(id) info.push("身份证号：" + id);
+    var tail = info.length ? '<span class="d-info">（' + esc(info.join("；")) + '）</span>' : "";
+    return '<p class="d-para">' + label + '：<b>' + esc(name || "＿＿＿＿") + '</b>' + tail + '</p>';
+  }
+
+  function matterText(s){
+    var types = s.taskType.join("、");
+    var body = s.taskDesc || "＿＿＿＿＿＿＿＿（待补充）";
+    var txt = (types ? "「" + types + "」：" : "") + body;
+    if(s.taskValue) txt += "（涉及物品或金额：" + s.taskValue + "）";
+    return "受托事项为" + txt + "。";
+  }
+  function powerText(s){
+    var powers = s.powers.length ? s.powers.join("、") : "仅限本委托事项";
+    var period = s.period || "即日 · 一次性事项";
+    return "受托人权限限于：" + powers + "。委托期限：" + period +
+           "。受托人不得将委托事项转委托他人办理；确需转委的，须经委托人另行确认。";
+  }
+  function costText(s){
+    var thanks = s.thanks || "双方另行商定";
+    return "答谢：" + thanks + "。费用与垫付：" + s.advance + "。";
+  }
+  function dutyLines(s){
+    var lines = [
+      "1．有约从约：双方就本次委托另有约定的，从其约定。",
+      "2．风险自担：无约定或约定不明的，跑腿过程中产生的物品损坏、丢失、延误等风险，由委托人自行承担。"
+    ];
+    s.extras.forEach(function(x, i){
+      lines.push((i + 3) + "．" + (EXTRA_CLAUSES[x] || x));
+    });
+    return lines;
+  }
+
+  function renderDoc(){
+    var s = getState();
+    var duties = dutyLines(s).map(function(l){ return '<span class="d-line">' + l + '</span>'; }).join("");
+    $("#doc").innerHTML =
+      '<div class="d-top"><span>邻里跑腿 · NEIGHBOR ERRANDS</span><span>编号：LL-＿＿＿＿</span></div>'+
+      '<h2 class="d-title">委托授权书</h2>'+
+      '<p class="d-sub">（邻里互助 · 非商业性质）</p>'+
+      '<div class="d-sep"></div>'+
+      partyLine("委托人", s.cName, s.cContact, s.cId)+
+      partyLine("受托人", s.rName, s.rContact, s.rId)+
+      '<p class="d-para d-intro">双方系同小区邻里，经私下协商一致，就下列互助事项达成委托约定，条款如下：</p>'+
+      '<p class="d-clause"><b>一、委托事项</b><span class="d-line">'+esc(matterText(s))+'</span></p>'+
+      '<p class="d-clause"><b>二、委托权限与期限</b><span class="d-line">'+esc(powerText(s))+'</span></p>'+
+      '<p class="d-clause"><b>三、答谢与费用</b><span class="d-line">'+esc(costText(s))+'</span></p>'+
+      '<p class="d-clause"><b>四、责任约定</b>'+duties+'</p>'+
+      '<div class="d-sign">'+
+        '<div class="d-sign-item">委托人签字：＿＿＿＿＿＿<br>日期：'+(s.signDate ? esc(s.signDate) : "＿＿＿＿")+'</div>'+
+        '<div class="d-sign-item">受托人签字：＿＿＿＿＿＿<br>日期：＿＿＿＿</div>'+
+      '</div>'+
+      '<p class="d-note">本文书由「邻里跑腿」互助页面生成，为邻里互助简易约定模板，不构成法律意见；涉及大额财物或重要证件的事项，请谨慎委托或咨询专业人士。</p>';
+  }
+
+  /* ---------- 海报版 ---------- */
+  function checkSVG(color){
+    return '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="'+color+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L20 6.5"/></svg>';
+  }
+  function chipsHTML(arr, act){
+    if(!arr.length) return "";
+    return '<div class="p-chips'+(act?' acts':'')+'">'+arr.map(function(x){
+      return '<i>'+(act?'★ ':'')+esc(x)+'</i>'; }).join("")+'</div>';
+  }
+
+  function renderPoster(){
+    var s = getState();
+    var card = $("#poster");
+    var deep = "#1E4E8C";
+
+    function row(label, val, sub){
+      return '<div class="p-row"><span class="p-label">'+label+'</span><div class="p-val">'+esc(val)+
+             (sub ? '<small>'+sub+'</small>' : '')+'</div></div>';
+    }
+
+    var rows = "";
+    if(s.cName) rows += row("委托人", s.cName, s.cContact || null);
+    if(s.rName) rows += row("受托人", s.rName, s.rContact || null);
+    if(s.period) rows += row("期限", s.period);
+    rows += row("答谢", s.thanks || "双方另行商定", "极小额 · 办完即结");
+    if(s.advance) rows += row("垫付", s.advance);
+
+    var ruleItems = ["有约从约", "无约风险委托人自担"].concat(s.extras);
+    var rulesHTML = '<div class="p-rules">' + ruleItems.map(function(r){
+      var wide = (r.length > 9) ? ' class="wide"' : '';
+      return '<div'+wide+'>'+checkSVG(deep)+esc(r)+'</div>'; }).join("") + '</div>';
+
+    card.innerHTML =
+      '<div class="p-band">'+
+        '<div class="p-toprow">'+
+          '<span class="p-brandmark">'+
+            '<svg width="20" height="20" viewBox="0 0 30 30" fill="none"><rect width="30" height="30" rx="9" fill="#EAF2FB" opacity=".92"/><circle cx="10.5" cy="10.5" r="3.6" fill="'+deep+'"/><path d="M4.6 21.6a6 6 0 0 1 11.8 0Z" fill="'+deep+'"/><rect x="16.5" y="13.2" width="9" height="8.4" rx="1.6" fill="#A86810"/><path d="M16.5 17.4h9" stroke="#FBFDFF" stroke-width="1.6"/></svg>'+
+            '邻里跑腿 · 非商业互助</span>'+
+          '<span class="p-stamp">立字据</span>'+
+        '</div>'+
+        '<div class="p-title">委托授权书</div>'+
+        '<div class="p-sub">把私下协商的约定 · 落成白纸黑字</div>'+
+        '<div class="p-divider"><span></span>'+
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M6 3.5h8l4 4v13H6z" fill="#EAF2FB"/><path d="M14 3.5v4h4" stroke="#5B8AC2" stroke-width="1.6"/><path d="M9 11h6M9 14.5h4" stroke="#5B8AC2" stroke-width="1.6" stroke-linecap="round"/></svg>'+
+        '<span></span></div>'+
+      '</div>'+
+      '<div class="p-body">'+
+        '<div class="p-rows">'+rows+'</div>'+
+        (s.taskDesc ? '<div class="p-quote">「'+esc(s.taskDesc)+'」</div>' : '')+
+        (s.taskType.length ? '<div class="p-block"><b>事项类型</b>'+chipsHTML(s.taskType, true)+'</div>' : '')+
+        (s.powers.length ? '<div class="p-block"><b>委托权限</b>'+chipsHTML(s.powers)+'</div>' : '')+
+        rulesHTML+
+      '</div>'+
+      '<div class="p-cta">'+
+        '<span>双方确认 · 签字生效</span>'+
+        '<b>委托人 ＿＿＿＿ ＆ 受托人 ＿＿＿＿</b>'+
+        '<i>建议打印签字 · 一式两份各执一份</i>'+
+      '</div>'+
+      '<div class="p-foot">非商业邻里互助 · 有约从约 · 无约风险委托人自担</div>';
+  }
+
+  function render(){
+    renderDoc();
+    renderPoster();
+  }
+
+  /* ---------- 文字版 ---------- */
+  function buildText(){
+    var s = getState();
+    function info(contact, id){
+      var a = [];
+      if(contact) a.push("联系方式：" + contact);
+      if(id) a.push("身份证号：" + id);
+      return a.length ? "（" + a.join("；") + "）" : "";
+    }
+    var L = [];
+    L.push("【邻里互助 · 委托授权书】");
+    L.push("委托人：" + (s.cName || "＿＿＿＿") + info(s.cContact, s.cId));
+    L.push("受托人：" + (s.rName || "＿＿＿＿") + info(s.rContact, s.rId));
+    L.push("一、委托事项：" + matterText(s));
+    L.push("二、委托权限与期限：" + powerText(s));
+    L.push("三、答谢与费用：" + costText(s));
+    L.push("四、责任约定：");
+    dutyLines(s).forEach(function(l){ L.push(l); });
+    L.push("委托人签字：＿＿＿＿＿＿　日期：" + (s.signDate || "＿＿＿＿"));
+    L.push("受托人签字：＿＿＿＿＿＿　日期：＿＿＿＿");
+    L.push("—— 本文书由「邻里跑腿」页面生成，为互助简易模板，不构成法律意见");
+    return L.join("\n");
+  }
+
+  /* ---------- 视图切换 ---------- */
+  var viewMode = "doc";
+  function setView(mode){
+    viewMode = mode;
+    $("#tabDoc").classList.toggle("on", mode === "doc");
+    $("#tabPoster").classList.toggle("on", mode === "poster");
+    $("#docWrap").style.display = (mode === "doc") ? "block" : "none";
+    $("#posterWrap").style.display = (mode === "poster") ? "block" : "none";
+  }
+  $("#tabDoc").addEventListener("click", function(){ setView("doc"); });
+  $("#tabPoster").addEventListener("click", function(){ setView("poster"); });
+
+  /* ---------- toast ---------- */
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+  }
+
+  /* ---------- 按钮 ---------- */
+  $("#btnCopy").addEventListener("click", function(){
+    var text = buildText();
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); toast("文字版已复制，去粘贴吧"); }
+      catch(e){ toast("复制失败，请手动选择文字复制"); }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast("文字版已复制，去粘贴吧"); }, fallback);
+    }else fallback();
+  });
+
+  $("#btnSample").addEventListener("click", function(){
+    fill(SAMPLE); render(); toast("已填入示例，改成你们的信息吧");
+  });
+  $("#btnClear").addEventListener("click", function(){
+    fill({ advance:"不涉及垫付",
+      taskType:[], powers:[], extras:[], taskTypeExtra:"",
+      cName:"", cContact:"", cId:"", rName:"", rContact:"", rId:"",
+      taskDesc:"", taskValue:"", period:"", thanks:"", signDate:"" });
+    render(); toast("已清空，开始填你们的信息");
+  });
+
+  $("#btnPrint").addEventListener("click", function(){
+    window.print();
+  });
+
+  $("#btnSave").addEventListener("click", function(){
+    var btn = this;
+    var target = (viewMode === "doc") ? $("#doc") : $("#poster");
+    var name = getState().cName;
+    if(typeof html2canvas === "undefined"){
+      toast("截图组件没加载成功，请直接对预览截图"); return;
+    }
+    btn.disabled = true; btn.style.opacity = .7;
+    html2canvas(target, { scale: 2, backgroundColor: null, logging: false }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "委托授权书-" + (name || "未命名") + ".png";
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+        btn.disabled = false; btn.style.opacity = 1;
+        toast((viewMode === "doc" ? "文书" : "海报") + "已保存，记得双方各留一份");
+      }, "image/png");
+    }).catch(function(){
+      btn.disabled = false; btn.style.opacity = 1;
+      toast("自动保存失败，请直接对预览截图");
+    });
+  });
+
+  /* ---------- fill & 绑定 ---------- */
+  function fill(d){
+    $("#cName").value = d.cName || "";   $("#cContact").value = d.cContact || "";   $("#cId").value = d.cId || "";
+    $("#rName").value = d.rName || "";   $("#rContact").value = d.rContact || "";   $("#rId").value = d.rId || "";
+    $("#taskDesc").value = d.taskDesc || "";
+    $("#taskValue").value = d.taskValue || "";
+    $("#taskTypeExtra").value = d.taskTypeExtra || "";
+    $("#period").value = d.period || "";
+    $("#thanks").value = d.thanks || "";
+    $("#signDate").value = d.signDate || "";
+    if(d.advance) $("#advance").value = d.advance;
+    setChips("taskType", d.taskType || []);
+    setChips("powers", d.powers || []);
+    setChips("extras", d.extras || []);
+  }
+
+  ["cName","cContact","cId","rName","rContact","rId",
+   "taskDesc","taskValue","taskTypeExtra","period","thanks","signDate"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", render);
+  });
+  $("#advance").addEventListener("change", render);
+  bindChips("taskType"); bindChips("powers"); bindChips("extras");
+
+  fill(SAMPLE);
+  setView("doc");
+  render();
+})();
+</script>
+</body>
+</html>

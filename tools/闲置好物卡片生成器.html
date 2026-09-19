@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>闲置好物卡片生成器 · 邻里跳蚤市场</title>
+<meta name="description" content="填物品名称、价格、成色、瑕疵和自提点，生成一张「闲置好物卡片」图片，发群里配图出闲置。">
+<style>
+  :root{
+    --bg:#F6F8F3;
+    --bg-soft:#EDF2EA;
+    --card:#FFFFFF;
+    --ink:#22301F;
+    --ink-soft:#63705C;
+    --brand:#2F6B4F;
+    --brand-deep:#24523D;
+    --brand-tint:#E4EEE7;
+    --green:#57793E;
+    --green-tint:#E9F0DF;
+    --amber:#C98A2D;
+    --amber-tint:#F7ECD4;
+    --line:#DCE5DA;
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(246,248,243,.9);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);text-decoration:none}
+  .brand svg{flex:none}
+  .brand small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em}
+  .nav-links{display:flex;gap:26px}
+  .nav-links a{color:var(--ink-soft);font-size:14.5px;font-weight:600;text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--brand)}
+  .nav-cta{display:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;
+    padding:8px 18px;border-radius:999px;text-decoration:none}
+
+  /* ---------- page head ---------- */
+  .page-head{padding:52px 0 8px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--brand-tint);color:var(--brand-deep);
+    font-size:13px;font-weight:700;letter-spacing:.06em;padding:6px 15px;border-radius:999px}
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand)}
+  h1{font-size:clamp(28px,3.6vw,40px);line-height:1.25;letter-spacing:.01em;font-weight:900;margin:16px 0 10px}
+  h1 em{font-style:normal;color:var(--brand)}
+  .lead{font-size:15.5px;color:var(--ink-soft);max-width:38em}
+
+  /* ---------- workspace ---------- */
+  .workspace{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:start;padding:30px 0 70px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+  .panel h3{font-size:16.5px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:9px}
+  .panel h3::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--brand)}
+  .panel:nth-child(2) h3::before{background:var(--green)}
+  .panel:nth-child(3) h3::before{background:var(--amber)}
+  .panel .p-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+
+  .f-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field{display:block}
+  .field.span2{grid-column:1 / -1}
+  .field>span{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:7px}
+  .field>span i{color:var(--brand);font-style:normal}
+  input[type=text],select{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;background:#FCFDFB;
+    padding:10px 14px;font-size:14.5px;color:var(--ink);font-family:inherit;outline:none;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  select{appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' stroke='%23889A84' stroke-width='1.8' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;
+  }
+  input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,107,79,.14)}
+  input::placeholder{color:#A8B5A5}
+  textarea{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;background:#FCFDFB;
+    padding:10px 14px;font-size:14.5px;color:var(--ink);font-family:inherit;outline:none;resize:vertical;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,107,79,.14)}
+
+  /* segmented control */
+  .seg{display:grid;gap:6px}
+  .seg.c3{grid-template-columns:repeat(3,1fr)}
+  .seg.c4{grid-template-columns:repeat(4,1fr)}
+  .seg button{
+    border:1.5px solid var(--line);background:#FCFDFB;color:var(--ink-soft);
+    font-size:13.5px;font-weight:700;font-family:inherit;padding:8px 6px;border-radius:10px;
+    cursor:pointer;transition:all .13s;line-height:1.4;
+  }
+  .seg button:hover{border-color:#A9C2B1}
+  .seg button.on{background:var(--brand-tint);border-color:var(--brand);color:var(--brand-deep)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1.5px solid var(--line);background:#FCFDFB;color:var(--ink-soft);
+    font-size:13.5px;font-weight:600;font-family:inherit;padding:6px 14px;border-radius:999px;
+    cursor:pointer;transition:all .13s;
+  }
+  .chip:hover{border-color:#A9C2B1}
+  .chip.on{background:var(--brand-tint);border-color:#9BBDA9;color:var(--brand-deep)}
+  .chip-extra{margin-top:9px}
+
+  /* ---------- preview column ---------- */
+  .preview-sticky{position:sticky;top:88px}
+  .stage-wrap{
+    background:var(--bg-soft);border:1px dashed #B9CCBF;border-radius:22px;
+    padding:26px 18px;display:flex;justify-content:center;
+  }
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14.5px;
+    padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-family:inherit;text-decoration:none;
+    transition:transform .15s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 12px 24px -12px rgba(47,107,79,.6);grid-column:1 / -1}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{color:var(--brand-deep);border:1.5px solid #B9CCBF;background:transparent}
+  .btn-ghost:hover{border-color:var(--brand)}
+  .tips{margin-top:14px;font-size:13px;color:var(--ink-soft);background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:11px 15px;display:flex;gap:9px;align-items:flex-start}
+  .tips svg{flex:none;margin-top:4px;color:var(--amber)}
+
+  /* ---------- poster ---------- */
+  .poster{
+    width:330px;border-radius:22px;overflow:hidden;text-align:left;position:relative;
+    --band1:#2F6B4F;--band2:#24523D;--deep:#24523D;--tint:#E4EEE7;--soft:#63705C;--paper:#FCFDFB;
+    --amberc:#C98A2D;
+  }
+  .poster.theme-amber{
+    --band1:#C9821E;--band2:#A86810;--deep:#A86810;--tint:#F7ECD4;--soft:#7A5E33;--paper:#FFFCF3;
+  }
+  .poster.theme-paper{
+    --band1:#5F8176;--band2:#4A665C;--deep:#4A665C;--tint:#EAF0EE;--soft:#63705C;--paper:#FFFFFF;
+  }
+  .p-band{
+    background:linear-gradient(150deg,var(--band1),var(--band2));
+    padding:18px 22px 20px;position:relative;color:#F2F7EF;
+  }
+  .p-band::after{
+    content:"";position:absolute;right:-52px;top:-60px;width:170px;height:170px;border-radius:50%;
+    background:rgba(255,255,255,.09);
+  }
+  .p-toprow{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+  .p-brandmark{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#DDEBE1}
+  .p-cate{font-size:11px;font-weight:800;color:var(--band1);background:#F0F6EE;
+    padding:3px 10px;border-radius:8px;letter-spacing:.1em;}
+  .p-title{
+    margin-top:18px;font-size:25px;font-weight:900;line-height:1.3;
+    color:#fff;position:relative;z-index:1;word-break:break-all;
+  }
+  .p-mode{
+    display:inline-block;margin-top:10px;font-size:12px;font-weight:800;letter-spacing:.08em;
+    background:rgba(240,246,238,.16);border:1.2px solid rgba(240,246,238,.55);color:#F0F6EE;
+    padding:3px 13px;border-radius:999px;position:relative;z-index:1;
+  }
+  .p-mode.gift{background:var(--amberc);border-color:var(--amberc);color:#fff}
+  .p-body{background:var(--paper);padding:16px 22px 18px}
+  .p-price-row{display:flex;align-items:baseline;gap:10px;padding-bottom:11px;border-bottom:1px solid var(--tint)}
+  .p-price{font-size:30px;font-weight:900;color:var(--deep);line-height:1.2}
+  .p-price small{font-size:14px;font-weight:700;margin-right:2px}
+  .p-price.free{color:var(--amberc)}
+  .p-price-unit{font-size:12px;font-weight:700;color:#A3B2A2;flex:1}
+  .p-caps{display:flex;gap:6px}
+  .p-caps i{
+    font-style:normal;font-size:11.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);padding:2.5px 10px;border-radius:999px;line-height:1.6;
+  }
+  .p-row{display:flex;gap:14px;padding:7.5px 0;border-bottom:1px solid var(--tint);align-items:baseline}
+  .p-rows{margin-top:4px}
+  .p-rows .p-row:last-child{border-bottom:none}
+  .p-label{flex:none;width:64px;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.14em}
+  .p-val{font-size:14px;font-weight:700;color:var(--ink);line-height:1.55;flex:1;word-break:break-all}
+  .p-block{margin-top:11px}
+  .p-block>b{display:block;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.14em;margin-bottom:7px}
+  .p-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .p-chips i{
+    font-style:normal;font-size:12.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);padding:2.5px 11px;border-radius:999px;line-height:1.6;
+  }
+  .p-flaw{
+    margin-top:12px;border-radius:11px;padding:10px 13px;font-size:12.5px;line-height:1.65;
+  }
+  .p-flaw b{display:flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.1em;margin-bottom:2px}
+  .p-flaw.warn{background:var(--amber-tint);color:#7A5E13}
+  .p-flaw.warn b{color:#8A5E13}
+  .p-flaw.ok{background:var(--green-tint);color:#3F5A33}
+  .p-flaw.ok b{color:#49662F}
+  .p-quote{margin-top:12px;padding:0 2px;font-size:13px;color:var(--deep);font-weight:700;line-height:1.7}
+  .p-cta{
+    background:linear-gradient(150deg,var(--band1),var(--band2));
+    padding:15px 22px 16px;color:#F2F7EF;position:relative;overflow:hidden;
+  }
+  .p-cta::after{
+    content:"";position:absolute;right:-40px;bottom:-70px;width:140px;height:140px;border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  .p-cta span{display:block;font-size:11.5px;font-weight:700;letter-spacing:.1em;color:#D3E5D8}
+  .p-cta b{display:block;font-size:17px;font-weight:900;margin-top:3px;color:#fff;word-break:break-all}
+  .p-cta i{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:#D3E5D8;margin-top:3px}
+  .p-foot{
+    background:#1E2B1D;color:#B4C4B3;text-align:center;font-size:10.5px;font-weight:600;
+    letter-spacing:.06em;padding:9px 12px;
+  }
+
+  footer{padding:40px 0 52px;text-align:center;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--line)}
+  footer .f-brand{font-weight:800;color:var(--ink);font-size:15px;margin-bottom:6px}
+
+  #toast{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#F2F7EF;font-size:13.5px;font-weight:600;
+    padding:11px 22px;border-radius:999px;opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .workspace{grid-template-columns:1fr}
+    .preview-sticky{position:static}
+    .preview-col{order:-1}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .nav-cta{display:inline-flex}
+    .page-head{padding:38px 0 4px}
+    .f-grid{grid-template-columns:1fr}
+    .actions{grid-template-columns:1fr 1fr}
+    .seg.c4{grid-template-columns:repeat(2,1fr)}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="跳蚤市场.html">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect width="30" height="30" rx="9" fill="#2F6B4F"/>
+        <path d="M8 12h14l-1.5 9.5a1.5 1.5 0 0 1-1.5 1.3H11a1.5 1.5 0 0 1-1.5-1.3L8 12Z" fill="#F6F8F3"/>
+        <path d="M11 12c0-3 1.8-4.5 4-4.5s4 1.5 4 4.5" stroke="#F6F8F3" stroke-width="1.7" fill="none"/>
+      </svg>
+      <span>邻里跳蚤市场<small>闲置好物卡片生成器</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="跳蚤市场.html">返回规则主页</a>
+      <a href="开市倡议生成器.html">开市倡议生成器 →</a>
+    </nav>
+    <a class="nav-cta" href="开市倡议生成器.html">开市倡议</a>
+  </div>
+</header>
+
+<main>
+  <div class="container page-head">
+    <span class="eyebrow">日常出闲置 · 生成 → 发图 → 邻居自提</span>
+    <h1>一张<em>好物卡片</em>，把闲置发进邻里群</h1>
+    <p class="lead">填好物品名称、价格、成色和自提点，右边卡片实时更新。保存图片配着发群，或复制文字版直接发；瑕疵请如实写，规则是 48 小时内可申诉。</p>
+  </div>
+
+  <div class="container workspace">
+    <!-- =============== form =============== -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h3>这件是什么</h3>
+        <p class="p-sub">名称写具体点，邻居一眼知道是不是自己要的。</p>
+        <div class="f-grid">
+          <label class="field span2"><span>物品名称 <i>*</i></span>
+            <input type="text" id="iname" maxlength="20" placeholder="如 九成新儿童滑板车">
+          </label>
+          <label class="field"><span>品类</span>
+            <select id="cate">
+              <option>图书绘本</option>
+              <option selected>童装玩具</option>
+              <option>小家电</option>
+              <option>厨房用具</option>
+              <option>绿植花盆</option>
+              <option>服饰包袋</option>
+              <option>运动器材</option>
+              <option>文具杂物</option>
+              <option>其他</option>
+            </select>
+          </label>
+          <label class="field"><span>转让方式</span>
+            <div class="seg c3" id="mode">
+              <button type="button" class="on">低价转让</button>
+              <button type="button">免费赠送</button>
+              <button type="button">以物换物</button>
+            </div>
+          </label>
+          <label class="field" id="priceField"><span>价格 <i>*</i></span>
+            <input type="text" id="price" maxlength="12" placeholder="如 30元">
+          </label>
+          <label class="field"><span>新旧程度</span>
+            <div class="seg c4" id="cond">
+              <button type="button">全新</button>
+              <button type="button" class="on">九成新</button>
+              <button type="button">有使用痕迹</button>
+              <button type="button">需修理</button>
+            </div>
+          </label>
+          <label class="field"><span>购入时长</span>
+            <input type="text" id="age" maxlength="12" placeholder="如 约1年">
+          </label>
+          <label class="field span2"><span>卖点一句话（选填）</span>
+            <input type="text" id="pitch" maxlength="40" placeholder="如 娃骑了三个月就长高了，闲置得太可惜">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>如实交代</h3>
+        <p class="p-sub">跳蚤市场规则：不退不换，但已知瑕疵必须写明，买家 48 小时内可就未说明瑕疵申诉。填「无」或不填会显示「卖家声明无已知瑕疵」。</p>
+        <div class="f-grid">
+          <label class="field span2"><span>瑕疵说明</span>
+            <textarea id="flaw" maxlength="80" rows="2" placeholder="如 右把手有划痕，刹车正常；其他无问题"></textarea>
+          </label>
+          <div class="field span2"><span>标签</span>
+            <div class="chips" id="tags">
+              <button type="button" class="chip on">需自提</button>
+              <button type="button" class="chip on">可小刀</button>
+              <button type="button" class="chip">有发票</button>
+              <button type="button" class="chip">已消毒</button>
+              <button type="button" class="chip">大件需搬</button>
+              <button type="button" class="chip">宠物家庭</button>
+              <button type="button" class="chip">可试可用</button>
+            </div>
+            <input type="text" class="chip-extra" id="tagsExtra" maxlength="30" placeholder="还有别的？用、隔开，如 可送货上门">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>怎么找到你</h3>
+        <p class="p-sub">自提点写到楼栋/大堂即可，约定时间后私发精确位置。</p>
+        <div class="f-grid">
+          <label class="field"><span>自提地点 <i>*</i></span>
+            <input type="text" id="pickup" maxlength="30" placeholder="如 3栋大堂快递架旁">
+          </label>
+          <label class="field"><span>联系方式 <i>*</i></span>
+            <input type="text" id="contact" maxlength="40" placeholder="如 微信 li_202">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =============== preview =============== -->
+    <div class="preview-col">
+      <div class="preview-sticky">
+        <div class="stage-wrap">
+          <div class="poster" id="card"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSave">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
+            保存为图片
+          </button>
+          <button class="btn btn-ghost" id="btnTheme">换个配色</button>
+          <button class="btn btn-ghost" id="btnCopy">复制文字版</button>
+          <button class="btn btn-ghost" id="btnSample">填入示例</button>
+          <button class="btn btn-ghost" id="btnClear">清空重填</button>
+        </div>
+        <p class="tips">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 7.8v.2"/></svg>
+          卡片适合发群配图，文字版适合接龙刷屏时快速浏览。价格谈好再线下当面交易，不走线上转账给陌生人。
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="f-brand">邻里跳蚤市场 · 旧物有新主</p>
+    <p>非商业邻里互助项目 · 闲置循环 · 线上发布线下自提 · 2026</p>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script src="html2canvas.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s){ return document.querySelector(s); };
+
+  var SAMPLE = {
+    iname:"九成新儿童滑板车", cate:"童装玩具", mode:"低价转让", price:"30元",
+    cond:"九成新", age:"约1年",
+    pitch:"娃骑了三个月就长高了，闲置得太可惜",
+    flaw:"右把手有划痕，刹车正常；其他无问题",
+    tags:["需自提","可小刀","可试可用"], tagsExtra:"",
+    pickup:"3栋大堂快递架旁", contact:"微信 li_202"
+  };
+
+  function bindChips(id){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest(".chip");
+      if(b){ b.classList.toggle("on"); render(); }
+    });
+  }
+  function chipValues(id){
+    return Array.prototype.map.call(
+      document.querySelectorAll("#"+id+" .chip.on"),
+      function(b){ return b.textContent.trim(); }
+    );
+  }
+  function setChips(id, values){
+    document.querySelectorAll("#"+id+" .chip").forEach(function(b){
+      b.classList.toggle("on", values.indexOf(b.textContent.trim()) >= 0);
+    });
+  }
+  function bindSeg(id, single, onChange){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest("button");
+      if(!b) return;
+      if(single && b.classList.contains("on")) return;
+      if(single){
+        box.querySelectorAll("button").forEach(function(x){ x.classList.remove("on"); });
+      }
+      b.classList.toggle("on");
+      if(onChange) onChange(b.textContent.trim(), b.classList.contains("on"));
+      render();
+    });
+  }
+  function segValue(id){
+    var b = document.querySelector("#"+id+" button.on");
+    return b ? b.textContent.trim() : "";
+  }
+  function setSeg(id, val){
+    document.querySelectorAll("#"+id+" button").forEach(function(b){
+      b.classList.toggle("on", b.textContent.trim() === val);
+    });
+  }
+  function splitList(s){
+    return s.split(/[\/、,，\n]/).map(function(x){ return x.trim(); }).filter(Boolean);
+  }
+  function esc(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function getState(){
+    return {
+      iname: $("#iname").value.trim(),
+      cate: $("#cate").value,
+      mode: segValue("mode"),
+      price: $("#price").value.trim(),
+      cond: segValue("cond"),
+      age: $("#age").value.trim(),
+      pitch: $("#pitch").value.trim(),
+      flaw: $("#flaw").value.trim(),
+      tags: chipValues("tags").concat(splitList($("#tagsExtra").value)),
+      pickup: $("#pickup").value.trim(),
+      contact: $("#contact").value.trim()
+    };
+  }
+
+  var themeIdx = 0, THEMES = ["", "theme-amber", "theme-paper"], DEEPS = ["#24523D", "#A86810", "#4A665C"];
+
+  function render(){
+    var s = getState();
+    var card = $("#card");
+    card.className = "poster " + THEMES[themeIdx];
+
+    var isGift = s.mode === "免费赠送", isSwap = s.mode === "以物换物";
+
+    // 价格联动：赠送隐藏价格输入框
+    $("#priceField").style.display = isGift ? "none" : "";
+    if(isGift) $("#price").placeholder = "";
+    else if(isSwap) $("#price").placeholder = "想换什么，如 换儿童绘本";
+    else $("#price").placeholder = "如 30元";
+
+    var priceHTML;
+    if(isGift){
+      priceHTML = '<div class="p-price free"><small>¥</small>0 · 免费赠送</div>';
+    }else if(s.price){
+      priceHTML = '<div class="p-price"><small>'+(isSwap ? "" : "¥")+'</small>'+esc(s.price)+'</div>';
+    }else{
+      priceHTML = '<div class="p-price" style="color:#A3B2A2">（价格待定）</div>';
+    }
+
+    function row(label, val){
+      return '<div class="p-row"><span class="p-label">'+label+'</span><div class="p-val">'+esc(val)+'</div></div>';
+    }
+
+    var rows = "";
+    if(s.pickup) rows += row("自提地点", s.pickup);
+    if(s.contact) rows += row("联系方式", s.contact);
+
+    // 瑕疵区：填「无」或不填 → 绿色声明；有内容 → 琥珀警示
+    var flawHTML;
+    if(s.flaw && s.flaw !== "无"){
+      flawHTML = '<div class="p-flaw warn"><b>⚠ 瑕疵说明（已如实告知）</b>'+esc(s.flaw)+'</div>';
+    }else{
+      flawHTML = '<div class="p-flaw ok"><b>✓ 卖家声明</b>无已知瑕疵 · 如有未说明问题可在 48 小时内申诉</div>';
+    }
+
+    card.innerHTML =
+      '<div class="p-band">'+
+        '<div class="p-toprow">'+
+          '<span class="p-brandmark">'+
+            '<svg width="20" height="20" viewBox="0 0 30 30" fill="none"><rect width="30" height="30" rx="9" fill="#F0F6EE" opacity=".92"/><path d="M8 12h14l-1.5 9.5a1.5 1.5 0 0 1-1.5 1.3H11a1.5 1.5 0 0 1-1.5-1.3L8 12Z" fill="'+DEEPS[themeIdx]+'"/><path d="M11 12c0-3 1.8-4.5 4-4.5s4 1.5 4 4.5" stroke="'+DEEPS[themeIdx]+'" stroke-width="1.7" fill="none"/></svg>'+
+            '邻里跳蚤市场 · 闲置转让</span>'+
+          '<span class="p-cate">'+esc(s.cate || "闲置好物")+'</span>'+
+        '</div>'+
+        '<div class="p-title">'+(s.iname ? esc(s.iname) : "闲置好物名称")+'</div>'+
+        (s.mode ? '<span class="p-mode'+(isGift?' gift':'')+'">'+esc(s.mode)+'</span>' : '')+
+      '</div>'+
+      '<div class="p-body">'+
+        '<div class="p-price-row">'+priceHTML+
+          '<span class="p-price-unit">线上发布 · 线下自提</span>'+
+          '<span class="p-caps">'+
+            (s.cond ? '<i>'+esc(s.cond)+'</i>' : '')+
+            (s.age ? '<i>'+esc(s.age)+'</i>' : '')+
+          '</span>'+
+        '</div>'+
+        '<div class="p-rows">'+rows+'</div>'+
+        flawHTML+
+        (s.tags.length ? '<div class="p-block"><b>标签</b><div class="p-chips">'+s.tags.map(function(t){ return '<i>'+esc(t)+'</i>'; }).join("")+'</div></div>' : '')+
+        (s.pitch ? '<div class="p-quote">“'+esc(s.pitch)+'”</div>' : '')+
+      '</div>'+
+      '<div class="p-cta">'+
+        '<span>想要的邻居 · 联系卖家</span>'+
+        '<b>'+(s.contact ? esc(s.contact) : '（联系方式待补充）')+'</b>'+
+        '<i>先到先得 · 约定时间自提 · 现金当面结清</i>'+
+      '</div>'+
+      '<div class="p-foot">邻里闲置 · 线上下单线下自提 · 不退不换（未说明瑕疵 48h 内可申诉）</div>';
+  }
+
+  function buildText(){
+    var s = getState();
+    var isGift = s.mode === "免费赠送", isSwap = s.mode === "以物换物";
+    var L = [];
+    L.push("【闲置出让】" + (s.iname || "（物品名称）") + "（" + (s.cate || "闲置") + "）");
+    var priceLine;
+    if(isGift) priceLine = "价格：免费赠送";
+    else if(isSwap) priceLine = "方式：以物换物" + (s.price ? " · " + s.price : "");
+    else priceLine = "价格：" + (s.price || "（待定）");
+    L.push(priceLine);
+    var condLine = "";
+    if(s.cond) condLine += s.cond;
+    if(s.age) condLine += (condLine ? " · " : "") + s.age;
+    if(condLine) L.push("成色：" + condLine);
+    if(s.flaw && s.flaw !== "无") L.push("瑕疵：" + s.flaw);
+    else L.push("瑕疵：卖家声明无已知瑕疵");
+    if(s.tags.length) L.push("标签：" + s.tags.join("、"));
+    if(s.pitch) L.push("介绍：" + s.pitch);
+    if(s.pickup) L.push("自提：" + s.pickup);
+    L.push("联系：" + (s.contact || "（联系方式）") + "，先到先得");
+    L.push("—— 规则：线下自提当面结清 · 不退不换（未说明瑕疵48h内可申诉）");
+    return L.join("\n");
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+  }
+
+  $("#btnTheme").addEventListener("click", function(){
+    themeIdx = (themeIdx + 1) % THEMES.length;
+    render();
+  });
+
+  $("#btnCopy").addEventListener("click", function(){
+    var text = buildText();
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); toast("文字版已复制，去粘贴吧"); }
+      catch(e){ toast("复制失败，请手动选择文字复制"); }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast("文字版已复制，去粘贴吧"); }, fallback);
+    }else fallback();
+  });
+
+  $("#btnSample").addEventListener("click", function(){
+    fill(SAMPLE); render(); toast("已填入示例，改成你的闲置吧");
+  });
+  $("#btnClear").addEventListener("click", function(){
+    fill({ cate:"童装玩具", mode:"低价转让", cond:"九成新", tags:[], tagsExtra:"",
+           iname:"", price:"", age:"", pitch:"", flaw:"", pickup:"", contact:"" });
+    render(); toast("已清空，开始填你的闲置");
+  });
+
+  $("#btnSave").addEventListener("click", function(){
+    var btn = this, card = $("#card");
+    var iname = getState().iname;
+    if(typeof html2canvas === "undefined"){
+      toast("截图组件没加载成功，请直接对卡片截图"); return;
+    }
+    btn.disabled = true; btn.style.opacity = .7;
+    html2canvas(card, { scale: 2, backgroundColor: null, logging: false }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "闲置好物-" + (iname || "未命名") + ".png";
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+        btn.disabled = false; btn.style.opacity = 1;
+        toast("卡片已保存，发群等邻居来淘～");
+      }, "image/png");
+    }).catch(function(){
+      btn.disabled = false; btn.style.opacity = 1;
+      toast("自动保存失败，请直接对卡片截图");
+    });
+  });
+
+  function fill(d){
+    $("#iname").value = d.iname || "";
+    $("#price").value = d.price || "";
+    $("#age").value = d.age || "";
+    $("#pitch").value = d.pitch || "";
+    $("#flaw").value = d.flaw || "";
+    $("#pickup").value = d.pickup || "";
+    $("#contact").value = d.contact || "";
+    $("#tagsExtra").value = d.tagsExtra || "";
+    if(d.cate) $("#cate").value = d.cate;
+    setSeg("mode", d.mode || "低价转让");
+    setSeg("cond", d.cond || "九成新");
+    setChips("tags", d.tags || []);
+  }
+
+  ["iname","price","age","pitch","flaw","pickup","contact","tagsExtra"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", render);
+  });
+  $("#cate").addEventListener("change", render);
+  bindChips("tags");
+  bindSeg("mode", true);
+  bindSeg("cond", true);
+
+  fill(SAMPLE);
+  render();
+})();
+</script>
+</body>
+</html>

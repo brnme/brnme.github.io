@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>开桌倡议生成器 · 邻里饭搭子</title>
+<meta name="description" content="填发起人、时间、地点、招牌菜，生成一张「开桌倡议」海报，发到社交软件招募饭搭子。">
+<style>
+  :root{
+    --bg:#FFF8F0;
+    --bg-soft:#FBEDDD;
+    --card:#FFFFFF;
+    --ink:#33261B;
+    --ink-soft:#75604E;
+    --brand:#D8491F;
+    --brand-deep:#A93410;
+    --brand-tint:#FBE7D6;
+    --green:#57793E;
+    --green-tint:#E9F0DF;
+    --amber:#A96F14;
+    --amber-tint:#F7ECD4;
+    --line:#F0DECB;
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,248,240,.9);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);text-decoration:none}
+  .brand svg{flex:none}
+  .brand small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em}
+  .nav-links{display:flex;gap:26px}
+  .nav-links a{color:var(--ink-soft);font-size:14.5px;font-weight:600;text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--brand)}
+  .nav-cta{display:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;
+    padding:8px 18px;border-radius:999px;text-decoration:none}
+
+  /* ---------- page head ---------- */
+  .page-head{padding:52px 0 8px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--brand-tint);color:var(--brand-deep);
+    font-size:13px;font-weight:700;letter-spacing:.06em;padding:6px 15px;border-radius:999px}
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand)}
+  h1{font-size:clamp(28px,3.6vw,40px);line-height:1.25;letter-spacing:.01em;font-weight:900;margin:16px 0 10px}
+  h1 em{font-style:normal;color:var(--brand)}
+  .lead{font-size:15.5px;color:var(--ink-soft);max-width:38em}
+
+  /* ---------- workspace ---------- */
+  .workspace{display:grid;grid-template-columns:1.05fr .95fr;gap:30px;align-items:start;padding:30px 0 70px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin-bottom:18px}
+  .panel h3{font-size:16.5px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:9px}
+  .panel h3::before{content:"";width:8px;height:8px;border-radius:3px;background:var(--brand)}
+  .panel:nth-child(2) h3::before{background:var(--green)}
+  .panel .p-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px}
+
+  .f-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .field{display:block}
+  .field.span2{grid-column:1 / -1}
+  .field>span{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:7px}
+  .field>span i{color:var(--brand);font-style:normal}
+  input[type=text],select{
+    width:100%;border:1.5px solid var(--line);border-radius:12px;background:#FFFDF9;
+    padding:10px 14px;font-size:14.5px;color:var(--ink);font-family:inherit;outline:none;
+    transition:border-color .15s,box-shadow .15s;
+  }
+  select{appearance:none;-webkit-appearance:none;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5 6 6.5 11 1.5' stroke='%23A98B6C' stroke-width='1.8' fill='none' stroke-linecap='round'/></svg>");
+    background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;
+  }
+  input:focus,select:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(216,73,31,.12)}
+  input::placeholder{color:#C9B49D}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    border:1.5px solid var(--line);background:#FFFDF9;color:var(--ink-soft);
+    font-size:13.5px;font-weight:600;font-family:inherit;padding:6px 14px;border-radius:999px;
+    cursor:pointer;transition:all .13s;
+  }
+  .chip:hover{border-color:#E0B892}
+  .chip.on{background:var(--brand-tint);border-color:#E5A886;color:var(--brand-deep)}
+  .chip-extra{margin-top:9px}
+
+  /* ---------- preview column ---------- */
+  .preview-sticky{position:sticky;top:88px}
+  .stage-wrap{
+    background:var(--bg-soft);border:1px dashed #E5C9A8;border-radius:22px;
+    padding:26px 18px;display:flex;justify-content:center;
+  }
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:700;font-size:14.5px;
+    padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-family:inherit;text-decoration:none;
+    transition:transform .15s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 12px 24px -12px rgba(216,73,31,.6);grid-column:1 / -1}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{color:var(--brand-deep);border:1.5px solid #E6C6A8;background:transparent}
+  .btn-ghost:hover{border-color:var(--brand)}
+  .tips{margin-top:14px;font-size:13px;color:var(--ink-soft);background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:11px 15px;display:flex;gap:9px;align-items:flex-start}
+  .tips svg{flex:none;margin-top:4px;color:var(--green)}
+
+  /* ---------- poster ---------- */
+  .poster{
+    width:330px;border-radius:22px;overflow:hidden;text-align:left;
+    --band1:#D8491F;--band2:#B23313;--deep:#A93410;--tint:#FBE7D6;--soft:#75604E;--paper:#FFFDF8;
+  }
+  .poster.theme-olive{
+    --band1:#5F8142;--band2:#49662F;--deep:#49662F;--tint:#E9F0DF;--soft:#5E6B4E;--paper:#FCFDF6;
+  }
+  .poster.theme-pumpkin{
+    --band1:#C9821E;--band2:#A86810;--deep:#A86810;--tint:#F7ECD4;--soft:#7A5E33;--paper:#FFFCF3;
+  }
+  .p-band{
+    background:linear-gradient(150deg,var(--band1),var(--band2));
+    padding:18px 22px 20px;position:relative;color:#FFF6EA;
+  }
+  .p-band::after{
+    content:"";position:absolute;right:-52px;top:-60px;width:170px;height:170px;border-radius:50%;
+    background:rgba(255,255,255,.09);
+  }
+  .p-band::before{
+    content:"";position:absolute;right:26px;bottom:-64px;width:120px;height:120px;border-radius:50%;
+    background:rgba(255,255,255,.07);
+  }
+  .p-toprow{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+  .p-brandmark{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.05em;color:#FFE3CF}
+  .p-stamp{
+    font-size:11px;font-weight:800;color:var(--band1);background:#FFF4E6;
+    padding:3px 10px;border-radius:8px;letter-spacing:.1em;
+  }
+  .p-title{
+    margin-top:20px;font-size:42px;font-weight:900;letter-spacing:.14em;line-height:1.15;
+    color:#fff;position:relative;z-index:1;
+  }
+  .p-sub{margin-top:6px;font-size:13.5px;font-weight:600;color:#FFDFC8;letter-spacing:.05em;position:relative;z-index:1}
+  .p-divider{display:flex;align-items:center;gap:10px;margin-top:16px;position:relative;z-index:1}
+  .p-divider span{flex:1;height:1px;background:rgba(255,244,230,.45)}
+  .p-body{background:var(--paper);padding:16px 22px 18px}
+  .p-row{display:flex;gap:14px;padding:7.5px 0;border-bottom:1px solid var(--tint);align-items:baseline}
+  .p-row:last-child{border-bottom:none}
+  .p-label{flex:none;width:64px;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.14em}
+  .p-val{font-size:14px;font-weight:700;color:var(--ink);line-height:1.55;flex:1}
+  .p-val small{display:block;font-size:11px;font-weight:600;color:#BFA488}
+  .p-block{margin-top:11px}
+  .p-block>b{display:block;font-size:12px;font-weight:800;color:var(--soft);letter-spacing:.14em;margin-bottom:7px}
+  .p-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .p-chips i{
+    font-style:normal;font-size:12.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);padding:2.5px 11px;border-radius:999px;line-height:1.6;
+  }
+  .p-chips.dishes i{background:transparent;border:1.2px solid var(--band1);color:var(--deep);padding:1.5px 10px}
+  .p-rules{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
+  .p-rules div{
+    display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--deep);
+    background:var(--tint);border-radius:9px;padding:6px 10px;line-height:1.5;
+  }
+  .p-rules div svg{flex:none}
+  .p-quote{
+    margin-top:14px;padding:0 2px;font-size:13px;color:var(--deep);font-weight:700;line-height:1.7;
+  }
+  .p-cta{
+    background:linear-gradient(150deg,var(--band1),var(--band2));
+    padding:16px 22px 17px;color:#FFF6EA;position:relative;overflow:hidden;
+  }
+  .p-cta::after{
+    content:"";position:absolute;right:-40px;bottom:-70px;width:140px;height:140px;border-radius:50%;
+    background:rgba(255,255,255,.08);
+  }
+  .p-cta span{display:block;font-size:11.5px;font-weight:700;letter-spacing:.1em;color:#FFDFC8}
+  .p-cta b{display:block;font-size:19px;font-weight:900;margin-top:3px;color:#fff;word-break:break-all}
+  .p-cta i{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:#FFDFC8;margin-top:3px}
+  .p-foot{
+    background:#2E2013;color:#CBB08E;text-align:center;font-size:10.5px;font-weight:600;
+    letter-spacing:.08em;padding:9px 12px;
+  }
+
+  footer{padding:40px 0 52px;text-align:center;color:var(--ink-soft);font-size:13px;border-top:1px solid var(--line)}
+  footer .f-brand{font-weight:800;color:var(--ink);font-size:15px;margin-bottom:6px}
+
+  #toast{
+    position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#FFF6EA;font-size:13.5px;font-weight:600;
+    padding:11px 22px;border-radius:999px;opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;z-index:99;max-width:86vw;text-align:center;
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .workspace{grid-template-columns:1fr}
+    .preview-sticky{position:static}
+    .preview-col{order:-1}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .nav-cta{display:inline-flex}
+    .page-head{padding:38px 0 4px}
+    .f-grid{grid-template-columns:1fr}
+    .actions{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="邻里饭搭子.html">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect width="30" height="30" rx="9" fill="#D8491F"/>
+        <path d="M7 14h16a8 8 0 0 1-16 0Z" fill="#FFF3E2"/>
+        <path d="M11 10.5c0-1.1.9-1.1.9-2.2M15 10.5c0-1.1.9-1.1.9-2.2M19 10.5c0-1.1.9-1.1.9-2.2" stroke="#FFF3E2" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>邻里饭搭子<small>开桌倡议生成器</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="邻里饭搭子.html">返回规则主页</a>
+      <a href="自我介绍生成器.html">我是求组人 →</a>
+    </nav>
+    <a class="nav-cta" href="自我介绍生成器.html">求组人版</a>
+  </div>
+</header>
+
+<main>
+  <div class="container page-head">
+    <span class="eyebrow">发起人专用 · 生成 → 发图 → 等邻居报名</span>
+    <h1>一封<em>开桌倡议</em>，招齐你的第一桌</h1>
+    <p class="lead">填好发起人、时间、地点和招牌菜，右边海报实时更新。保存图片发朋友圈、业主群、社交平台；也可以复制文字版直接发群里。</p>
+  </div>
+
+  <div class="container workspace">
+    <!-- =============== form =============== -->
+    <div class="form-col">
+
+      <div class="panel">
+        <h3>发起人信息</h3>
+        <p class="p-sub">邻居要能找到你：称呼、联系方式、地点缺一不可。</p>
+        <div class="f-grid">
+          <label class="field"><span>发起人昵称 <i>*</i></span>
+            <input type="text" id="nick" maxlength="12" placeholder="怎么称呼你">
+          </label>
+          <label class="field"><span>联系方式 <i>*</i></span>
+            <input type="text" id="contact" maxlength="40" placeholder="如 微信 atang088">
+          </label>
+          <label class="field span2"><span>聚餐地点 <i>*</i></span>
+            <input type="text" id="location" maxlength="40" placeholder="如 阳光花园3期 · 2号楼一层共享厨房">
+          </label>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>这一桌怎么开</h3>
+        <p class="p-sub">参照发起流程：时间、人数、预算先说清，报名不扯皮。</p>
+        <div class="f-grid">
+          <label class="field span2"><span>开桌时间</span>
+            <input type="text" id="time" maxlength="30" list="timeList" placeholder="如 每周二 · 周四 晚7点">
+            <datalist id="timeList">
+              <option value="每周二 · 周四 晚7点"></option>
+              <option value="工作日晚餐 · 到点就吃"></option>
+              <option value="每周三 · 五 晚7点"></option>
+              <option value="周末午餐 · 周六周日轮着来"></option>
+              <option value="每周五晚 · 周末聚餐"></option>
+            </datalist>
+          </label>
+          <label class="field"><span>招募人数</span>
+            <select id="headcount">
+              <option>2–3 位邻居</option>
+              <option selected>3–4 位邻居</option>
+              <option>4–5 位邻居</option>
+              <option>人齐就开 · 人数不限</option>
+            </select>
+          </label>
+          <label class="field"><span>人均预算</span>
+            <select id="budget">
+              <option>15元以内</option>
+              <option selected>15–20元</option>
+              <option>20–30元</option>
+              <option>按实际AA · 不设上限</option>
+            </select>
+          </label>
+          <div class="field span2"><span>口味方向</span>
+            <div class="chips" id="taste">
+              <button type="button" class="chip on">家常菜</button>
+              <button type="button" class="chip">偏辣</button>
+              <button type="button" class="chip">清淡</button>
+              <button type="button" class="chip">无辣不欢</button>
+              <button type="button" class="chip">面食为主</button>
+              <button type="button" class="chip">无肉不欢</button>
+              <button type="button" class="chip">少油少盐</button>
+            </div>
+            <input type="text" class="chip-extra" id="tasteExtra" maxlength="30" placeholder="还有别的？用、隔开，如 粤式煲汤、烧烤">
+          </div>
+          <label class="field span2"><span>主厨招牌菜（会用 / 分开展示）</span>
+            <input type="text" id="dishes" maxlength="60" placeholder="如 红烧排骨 / 番茄牛腩 / 清炒时蔬">
+          </label>
+          <div class="field span2"><span>开桌规矩（海报上亮出来的四条）</span>
+            <div class="chips" id="rulesBox">
+              <button type="button" class="chip on">轮流掌勺</button>
+              <button type="button" class="chip on">饭后AA当顿结清</button>
+              <button type="button" class="chip on">当餐吃完不吃过夜</button>
+              <button type="button" class="chip on">忌口过敏提前报备</button>
+              <button type="button" class="chip">小票留痕周结账</button>
+              <button type="button" class="chip">来去自由好聚好散</button>
+            </div>
+          </div>
+          <label class="field span2"><span>一句邀请语（选填）</span>
+            <input type="text" id="slogan" maxlength="46" placeholder="如 一桌家常菜，一个熟人圈，等你来掌勺">
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- =============== preview =============== -->
+    <div class="preview-col">
+      <div class="preview-sticky">
+        <div class="stage-wrap">
+          <div class="poster" id="card"></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" id="btnSave">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5"/><path d="M5 19h14"/></svg>
+            保存为图片
+          </button>
+          <button class="btn btn-ghost" id="btnTheme">换个配色</button>
+          <button class="btn btn-ghost" id="btnCopy">复制文字版</button>
+          <button class="btn btn-ghost" id="btnSample">填入示例</button>
+          <button class="btn btn-ghost" id="btnClear">清空重填</button>
+        </div>
+        <p class="tips">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 7.8v.2"/></svg>
+          海报适合发朋友圈和社交平台，文字版适合直接发群。地点写到小区/楼栋即可，精细门牌等熟人确定后再私发。
+        </p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p class="f-brand">邻里饭搭子 · 互助共餐</p>
+    <p>非商业邻里互助项目 · 一起买菜、轮流掌勺、饭后 AA · 2026</p>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<script src="html2canvas.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(s){ return document.querySelector(s); };
+
+  var SAMPLE = {
+    nick:"阿汤", contact:"微信 atang088", location:"望江府3期 · 2号楼一层共享厨房",
+    time:"每周二 · 周四 晚7点", headcount:"3–4 位邻居", budget:"15–20元",
+    taste:["家常菜","偏辣"], tasteExtra:"", dishes:"红烧排骨 / 番茄牛腩 / 清炒时蔬",
+    rules:["轮流掌勺","饭后AA当顿结清","当餐吃完不吃过夜","忌口过敏提前报备"],
+    slogan:"一桌家常菜，一个熟人圈。会做饭的来掌勺，不会的来洗碗～"
+  };
+
+  function bindChips(id){
+    var box = document.getElementById(id);
+    box.addEventListener("click", function(e){
+      var b = e.target.closest(".chip");
+      if(b){ b.classList.toggle("on"); render(); }
+    });
+  }
+  function chipValues(id){
+    return Array.prototype.map.call(
+      document.querySelectorAll("#"+id+" .chip.on"),
+      function(b){ return b.textContent.trim(); }
+    );
+  }
+  function setChips(id, values){
+    document.querySelectorAll("#"+id+" .chip").forEach(function(b){
+      b.classList.toggle("on", values.indexOf(b.textContent.trim()) >= 0);
+    });
+  }
+  function splitList(s){
+    return s.split(/[\/、,，\n]/).map(function(x){ return x.trim(); }).filter(Boolean);
+  }
+  function esc(s){
+    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  function getState(){
+    return {
+      nick: $("#nick").value.trim(),
+      contact: $("#contact").value.trim(),
+      location: $("#location").value.trim(),
+      time: $("#time").value.trim(),
+      headcount: $("#headcount").value,
+      budget: $("#budget").value,
+      taste: chipValues("taste").concat(splitList($("#tasteExtra").value)),
+      dishes: splitList($("#dishes").value),
+      rules: chipValues("rulesBox"),
+      slogan: $("#slogan").value.trim()
+    };
+  }
+
+  function checkSVG(color){
+    return '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="'+color+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L20 6.5"/></svg>';
+  }
+  function chipsHTML(arr, dish){
+    if(!arr.length) return "";
+    return '<div class="p-chips'+(dish?' dishes':'')+'">'+arr.map(function(x){
+      return '<i>'+(dish?'★ ':'')+esc(x)+'</i>'; }).join("")+'</div>';
+  }
+
+  var themeIdx = 0, THEMES = ["", "theme-olive", "theme-pumpkin"], DEEPS = ["#A93410", "#49662F", "#A86810"];
+
+  function render(){
+    var s = getState();
+    var card = $("#card");
+    card.className = "poster " + THEMES[themeIdx];
+    var deep = DEEPS[themeIdx];
+
+    function row(label, val, sub){
+      return '<div class="p-row"><span class="p-label">'+label+'</span><div class="p-val">'+esc(val)+
+             (sub ? '<small>'+sub+'</small>' : '')+'</div></div>';
+    }
+
+    var rows = "";
+    if(s.nick) rows += row("发起人", s.nick);
+    if(s.time) rows += row("开桌时间", s.time);
+    if(s.location) rows += row("聚餐地点", s.location);
+    if(s.headcount) rows += row("招募人数", s.headcount, "步行15分钟内的邻居优先");
+    if(s.budget) rows += row("人均预算", "¥" + s.budget + " · 饭后AA");
+
+    var rulesHTML = "";
+    if(s.rules.length){
+      rulesHTML = '<div class="p-rules">' + s.rules.map(function(r){
+        return '<div>'+checkSVG(deep)+esc(r)+'</div>'; }).join("") + '</div>';
+    }
+
+    card.innerHTML =
+      '<div class="p-band">'+
+        '<div class="p-toprow">'+
+          '<span class="p-brandmark">'+
+            '<svg width="20" height="20" viewBox="0 0 30 30" fill="none"><rect width="30" height="30" rx="9" fill="#FFF3E2" opacity=".92"/><path d="M7 14h16a8 8 0 0 1-16 0Z" fill="'+deep+'"/><path d="M11 10.5c0-1.1.9-1.1.9-2.2M15 10.5c0-1.1.9-1.1.9-2.2M19 10.5c0-1.1.9-1.1.9-2.2" stroke="'+deep+'" stroke-width="1.6" stroke-linecap="round"/></svg>'+
+            '邻里饭搭子 · 非商业互助</span>'+
+          '<span class="p-stamp">召集中</span>'+
+        '</div>'+
+        '<div class="p-title">开桌倡议</div>'+
+        '<div class="p-sub">寻找同小区饭搭子 · 人齐就开伙</div>'+
+        '<div class="p-divider"><span></span>'+
+          '<svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4.5 11.5h15a7.5 7.5 0 0 1-15 0Z" fill="#FFF3E2"/><path d="M8 8.4c0-1 .8-1 .8-2M11.6 8.4c0-1 .8-1 .8-2M15.2 8.4c0-1 .8-1 .8-2" stroke="#FFF3E2" stroke-width="1.6" stroke-linecap="round"/></svg>'+
+        '<span></span></div>'+
+      '</div>'+
+      '<div class="p-body">'+
+        '<div class="p-rows">'+rows+'</div>'+
+        (s.taste.length ? '<div class="p-block"><b>口味方向</b>'+chipsHTML(s.taste)+'</div>' : '')+
+        (s.dishes.length ? '<div class="p-block"><b>主厨招牌</b>'+chipsHTML(s.dishes, true)+'</div>' : '')+
+        rulesHTML +
+        (s.slogan ? '<div class="p-quote">“'+esc(s.slogan)+'”</div>' : '')+
+      '</div>'+
+      '<div class="p-cta">'+
+        '<span>想一起开伙 · 联系发起人</span>'+
+        '<b>'+(s.contact ? esc(s.contact) : '（联系方式待补充）')+'</b>'+
+        '<i>加好友请备注「饭搭子」· 先来试一顿也行</i>'+
+      '</div>'+
+      '<div class="p-foot">非商业邻里互助 · 餐费按成本AA · 来去自由</div>';
+  }
+
+  function buildText(){
+    var s = getState();
+    var L = [];
+    L.push("【开桌倡议】同小区饭搭子招募");
+    L.push("发起人：" + (s.nick || "（昵称）"));
+    if(s.time) L.push("时间：" + s.time);
+    if(s.location) L.push("地点：" + s.location);
+    if(s.headcount) L.push("招募：" + s.headcount + "（步行15分钟内优先）");
+    if(s.taste.length) L.push("口味：" + s.taste.join("、"));
+    if(s.dishes.length) L.push("主厨招牌：" + s.dishes.join(" / "));
+    if(s.budget) L.push("人均：¥" + s.budget + " · 饭后AA");
+    if(s.rules.length) L.push("规矩：" + s.rules.join(" · "));
+    if(s.slogan) L.push("一句话：" + s.slogan);
+    L.push("想入伙加我：" + (s.contact || "（联系方式）") + "，备注「饭搭子」");
+    L.push("—— 来自「邻里饭搭子」非商业互助共餐计划");
+    return L.join("\n");
+  }
+
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+  }
+
+  $("#btnTheme").addEventListener("click", function(){
+    themeIdx = (themeIdx + 1) % THEMES.length;
+    render();
+  });
+
+  $("#btnCopy").addEventListener("click", function(){
+    var text = buildText();
+    function fallback(){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand("copy"); toast("文字版已复制，去粘贴吧"); }
+      catch(e){ toast("复制失败，请手动选择文字复制"); }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ toast("文字版已复制，去粘贴吧"); }, fallback);
+    }else fallback();
+  });
+
+  $("#btnSample").addEventListener("click", function(){
+    fill(SAMPLE); render(); toast("已填入示例，改成你的信息吧");
+  });
+  $("#btnClear").addEventListener("click", function(){
+    fill({ headcount:"3–4 位邻居", budget:"15–20元", taste:[], rules:[], tasteExtra:"", time:"", contact:"", nick:"", location:"", dishes:"", slogan:"" });
+    render(); toast("已清空，开始填你的信息");
+  });
+
+  $("#btnSave").addEventListener("click", function(){
+    var btn = this, card = $("#card");
+    var nick = getState().nick;
+    if(typeof html2canvas === "undefined"){
+      toast("截图组件没加载成功，请直接对海报截图"); return;
+    }
+    btn.disabled = true; btn.style.opacity = .7;
+    html2canvas(card, { scale: 2, backgroundColor: null, logging: false }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        var a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "开桌倡议-" + (nick || "未命名") + ".png";
+        document.body.appendChild(a); a.click();
+        setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 800);
+        btn.disabled = false; btn.style.opacity = 1;
+        toast("海报已保存，发出去等邻居报名～");
+      }, "image/png");
+    }).catch(function(){
+      btn.disabled = false; btn.style.opacity = 1;
+      toast("自动保存失败，请直接对海报截图");
+    });
+  });
+
+  function fill(d){
+    $("#nick").value = d.nick || "";
+    $("#contact").value = d.contact || "";
+    $("#location").value = d.location || "";
+    $("#time").value = d.time || "";
+    $("#tasteExtra").value = d.tasteExtra || "";
+    $("#dishes").value = d.dishes || "";
+    $("#slogan").value = d.slogan || "";
+    if(d.headcount) $("#headcount").value = d.headcount;
+    if(d.budget) $("#budget").value = d.budget;
+    setChips("taste", d.taste || []);
+    setChips("rulesBox", d.rules || []);
+  }
+
+  ["nick","contact","location","time","tasteExtra","dishes","slogan"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", render);
+  });
+  $("#headcount").addEventListener("change", render);
+  $("#budget").addEventListener("change", render);
+  bindChips("taste"); bindChips("rulesBox");
+
+  fill(SAMPLE);
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>邻里饭搭子 · 互助共餐的规则与流程</title>
+<meta name="description" content="面向同龄邻里的非商业互助共餐计划：一起买菜、轮流掌勺、饭后 AA。本页介绍发起流程、日常运转与规则速查。">
+<style>
+  :root{
+    --bg:#FFF8F0;
+    --bg-soft:#FBEDDD;
+    --card:#FFFFFF;
+    --ink:#33261B;
+    --ink-soft:#75604E;
+    --brand:#D8491F;
+    --brand-deep:#A93410;
+    --brand-tint:#FBE7D6;
+    --green:#57793E;
+    --green-tint:#E9F0DF;
+    --amber:#A96F14;
+    --amber-tint:#F7ECD4;
+    --brown:#7A4E2B;
+    --brown-tint:#F0E4D6;
+    --line:#F0DECB;
+    --radius:18px;
+    --shadow:0 10px 30px -18px rgba(120,70,30,.35);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC","Source Han Sans SC",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  .container{max-width:1120px;margin:0 auto;padding:0 24px}
+  section{padding:76px 0;scroll-margin-top:80px}
+
+  /* ---------- header ---------- */
+  .site-header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(255,248,240,.9);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--ink);text-decoration:none}
+  .brand svg{flex:none}
+  .brand small{display:block;font-size:11px;font-weight:600;color:var(--ink-soft);letter-spacing:.08em}
+  .nav-links{display:flex;gap:26px}
+  .nav-links a{color:var(--ink-soft);font-size:14.5px;font-weight:600;text-decoration:none;transition:color .15s}
+  .nav-links a:hover{color:var(--brand)}
+  .nav-cta{display:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:700;
+    padding:8px 18px;border-radius:999px;text-decoration:none}
+
+  /* ---------- hero ---------- */
+  .hero{padding:78px 0 56px}
+  .hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:52px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--brand-tint);color:var(--brand-deep);
+    font-size:13px;font-weight:700;letter-spacing:.06em;padding:6px 15px;border-radius:999px}
+  .eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand)}
+  h1{font-size:clamp(34px,4.8vw,52px);line-height:1.18;letter-spacing:.01em;font-weight:900;margin:20px 0 18px}
+  h1 em{font-style:normal;color:var(--brand);position:relative}
+  .lead{font-size:17px;color:var(--ink-soft);max-width:33em}
+  .cta-row{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:15px;
+    padding:13px 28px;border-radius:999px;text-decoration:none;transition:transform .15s,box-shadow .15s}
+  .btn-primary{background:var(--brand);color:#fff;box-shadow:0 12px 24px -12px rgba(216,73,31,.6)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 28px -12px rgba(216,73,31,.65)}
+  .btn-ghost{color:var(--brand-deep);border:1.5px solid #E6C6A8;background:transparent}
+  .btn-ghost:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .hero-art{display:flex;justify-content:center}
+  .hero-art svg{width:100%;max-width:400px;height:auto}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:52px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+  .stat b{display:block;font-size:23px;font-weight:900;color:var(--brand-deep);line-height:1.3;font-variant-numeric:tabular-nums}
+  .stat span{font-size:13px;color:var(--ink-soft)}
+
+  /* ---------- section head ---------- */
+  .sec-head{max-width:640px;margin-bottom:44px}
+  .kicker{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.14em;color:var(--brand);margin-bottom:10px}
+  h2{font-size:clamp(26px,3.2vw,36px);font-weight:900;line-height:1.3;margin-bottom:12px}
+  .sec-head p{color:var(--ink-soft)}
+
+  /* ---------- benefits ---------- */
+  .benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .benefit{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 24px;transition:transform .18s,box-shadow .18s}
+  .benefit:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .icon-chip{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--brand-tint);color:var(--brand-deep)}
+  .benefit:nth-child(2) .icon-chip{background:var(--green-tint);color:var(--green)}
+  .benefit:nth-child(3) .icon-chip{background:var(--amber-tint);color:var(--amber)}
+  .benefit:nth-child(4) .icon-chip{background:var(--brown-tint);color:var(--brown)}
+  .benefit:nth-child(5) .icon-chip{background:var(--green-tint);color:var(--green)}
+  .benefit:nth-child(6) .icon-chip{background:var(--amber-tint);color:var(--amber)}
+  .benefit h3{font-size:18px;font-weight:800;margin:16px 0 8px}
+  .benefit p{font-size:14.5px;color:var(--ink-soft)}
+
+  /* ---------- launch steps ---------- */
+  .launch{background:var(--bg-soft);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .step-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 18px;position:relative}
+  .step::before{content:"";position:absolute;top:0;left:18px;right:18px;height:4px;border-radius:0 0 6px 6px;background:var(--brand-tint)}
+  .step-num{font-size:26px;font-weight:900;color:var(--brand);opacity:.9;font-variant-numeric:tabular-nums}
+  .step h3{font-size:16.5px;font-weight:800;margin:6px 0 8px}
+  .step p{font-size:13.5px;color:var(--ink-soft);line-height:1.7}
+  .step-note{margin-top:20px;font-size:13.5px;color:var(--ink-soft);display:flex;align-items:center;gap:8px}
+  .step-note svg{flex:none;color:var(--green)}
+  .step p a{color:var(--brand-deep);font-weight:700}
+  .join-band .btn-light{background:#FFF4EA;color:var(--brand-deep)}
+  .join-band .btn-light:hover{transform:translateY(-2px)}
+
+  /* ---------- operations ---------- */
+  .ops-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:start}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:28px}
+  .panel h3{font-size:19px;font-weight:800;margin-bottom:4px}
+  .panel .panel-sub{font-size:13.5px;color:var(--ink-soft);margin-bottom:18px}
+  .timeline-item{display:grid;grid-template-columns:104px 1fr;gap:14px;padding:11px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+  .timeline-item:last-child{border-bottom:none}
+  .time{font-weight:800;color:var(--brand-deep);font-size:13px;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .timeline-item p{font-size:14.5px;color:var(--ink)}
+  .timeline-item p span{color:var(--ink-soft)}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+  .role{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .role b{display:flex;align-items:center;gap:8px;font-size:14.5px;margin-bottom:4px}
+  .role b svg{color:var(--brand)}
+  .role span{font-size:13px;color:var(--ink-soft);line-height:1.6;display:block}
+  .ops-note{font-size:13.5px;color:var(--ink-soft);background:var(--bg-soft);border-radius:12px;padding:12px 16px}
+  .weekly-item{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:11px 0;border-bottom:1px dashed var(--line);align-items:baseline}
+  .weekly-item:last-of-type{border-bottom:none}
+  .weekly-item .time{color:var(--green)}
+  .weekly-item p{font-size:14.5px}
+  .weekly-item p span{color:var(--ink-soft)}
+
+  /* ---------- rules ---------- */
+  .rule-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .rule{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+  .rule-head{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .rule-head .icon-chip{width:42px;height:42px}
+  .rule-head h3{font-size:18px;font-weight:800}
+  .rule ul{list-style:none}
+  .rule li{position:relative;padding:5px 0 5px 24px;font-size:14.5px;color:var(--ink-soft)}
+  .rule li b{color:var(--ink);font-weight:700}
+  .rule li::before{content:"";position:absolute;left:4px;top:14px;width:7px;height:7px;border-radius:50%;background:var(--brand);opacity:.55}
+  .rule-money .icon-chip{background:var(--brand-tint);color:var(--brand-deep)}
+  .rule-new .icon-chip{background:var(--green-tint);color:var(--green)}
+  .rule-new li::before{background:var(--green)}
+  .rule-leave .icon-chip{background:var(--amber-tint);color:var(--amber)}
+  .rule-leave li::before{background:var(--amber)}
+  .rule-safe .icon-chip{background:var(--brown-tint);color:var(--brown)}
+  .rule-safe li::before{background:var(--brown)}
+  .dispute{margin-top:18px;background:var(--brand-tint);border-radius:var(--radius);
+    padding:18px 24px;display:flex;gap:14px;align-items:flex-start}
+  .dispute svg{flex:none;color:var(--brand-deep);margin-top:3px}
+  .dispute p{font-size:14.5px;color:var(--brand-deep)}
+  .dispute p b{font-weight:800}
+
+  /* ---------- join ---------- */
+  .join-band{background:linear-gradient(135deg,#C43E17,#A93410 60%,#8E2B0D);border-radius:26px;
+    padding:52px 48px;color:#FFF4EA;position:relative;overflow:hidden}
+  .join-band::after{content:"";position:absolute;right:-70px;bottom:-90px;width:280px;height:280px;
+    border-radius:50%;background:rgba(255,255,255,.07)}
+  .join-band .kicker{color:#FFD9C4}
+  .join-band h2{color:#fff}
+  .join-band>p{color:#FFE3D3;max-width:38em;margin-bottom:30px;font-size:15.5px}
+  .join-ways{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;position:relative;z-index:1}
+  .way{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:20px}
+  .way b{display:block;font-size:16px;margin-bottom:6px}
+  .way span{font-size:13.5px;color:#FFE3D3;line-height:1.7;display:block}
+  .join-foot{margin-top:24px;font-size:13px;color:#FFD0BC;position:relative;z-index:1}
+
+  footer{padding:44px 0 56px;text-align:center;color:var(--ink-soft);font-size:13px}
+  footer .f-brand{font-weight:800;color:var(--ink);font-size:15px;margin-bottom:6px}
+  footer p+p{margin-top:4px}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:36px}
+    .hero-art{order:-1}
+    .hero-art svg{max-width:280px}
+    .benefit-grid{grid-template-columns:1fr 1fr}
+    .step-grid{grid-template-columns:repeat(2,1fr)}
+    .ops-grid{grid-template-columns:1fr}
+    .join-ways{grid-template-columns:1fr}
+    .join-band{padding:40px 28px}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .nav-cta{display:inline-flex}
+    section{padding:56px 0}
+    .hero{padding:48px 0 40px}
+    .stats{grid-template-columns:1fr 1fr}
+    .benefit-grid{grid-template-columns:1fr}
+    .step-grid{grid-template-columns:1fr}
+    .rule-grid{grid-template-columns:1fr}
+    .roles{grid-template-columns:1fr}
+    .timeline-item,.weekly-item{grid-template-columns:88px 1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= header ================= -->
+<header class="site-header">
+  <div class="container nav">
+    <a class="brand" href="#top">
+      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
+        <rect width="30" height="30" rx="9" fill="#D8491F"/>
+        <path d="M7 14h16a8 8 0 0 1-16 0Z" fill="#FFF3E2"/>
+        <path d="M11 10.5c0-1.1.9-1.1.9-2.2M15 10.5c0-1.1.9-1.1.9-2.2M19 10.5c0-1.1.9-1.1.9-2.2" stroke="#FFF3E2" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      <span>邻里饭搭子<small>MUTUAL DINING</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#benefits">为什么搭伙</a>
+      <a href="#launch">发起流程</a>
+      <a href="#daily">日常运转</a>
+      <a href="#rules">规则速查</a>
+      <a href="自我介绍生成器.html">生成器</a>
+      <a href="#join">加入我们</a>
+    </nav>
+    <a class="nav-cta" href="#join">加入我们</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= hero ================= -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">非商业 · 邻里互助共餐计划</span>
+          <h1>一桌家常菜，<br>一个<em>熟人圈</em>。</h1>
+          <p class="lead">面向步行 15 分钟内的同龄邻里：一起买菜、轮流掌勺、饭后 AA。不开发软件、不设门槛，用一套台账和一页规则，把「搭伙吃饭」变成可持续的日常。</p>
+          <div class="cta-row">
+            <a class="btn btn-primary" href="#join">看看怎么加入
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-ghost" href="#rules">先读规则速查</a>
+          </div>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg viewBox="0 0 320 320" fill="none">
+            <circle cx="160" cy="164" r="138" fill="#FBE3CE"/>
+            <path d="M226 44l44 116M242 38l44 116" stroke="#8A5A33" stroke-width="8" stroke-linecap="round"/>
+            <path d="M58 168a102 102 0 0 0 204 0Z" fill="#D8491F"/>
+            <path d="M138 262h44l6 14a6 6 0 0 1-6 8h-44a6 6 0 0 1-6-8Z" fill="#A93410"/>
+            <ellipse cx="160" cy="168" rx="102" ry="27" fill="#FFF6E8"/>
+            <path d="M112 160c8-4 18-4 26 0M188 158c8-4 18-4 26 0M146 174c9-4 20-4 29 0" stroke="#E8CBA4" stroke-width="4" stroke-linecap="round"/>
+            <path d="M120 120c0-14 10-14 10-28M160 112c0-16 11-16 11-32M200 120c0-14 10-14 10-28" stroke="#E2A171" stroke-width="6" stroke-linecap="round"/>
+            <circle cx="66" cy="110" r="17" fill="#D8491F"/>
+            <path d="M60 96c3-4 9-4 12 0" stroke="#57793E" stroke-width="4" stroke-linecap="round"/>
+            <path d="M250 108c10-2 18 6 16 16-10 2-18-6-16-16Z" fill="#57793E"/>
+            <path d="M70 236c-8 6-8 16 0 22M252 224c8 6 8 16 0 22" stroke="#E2A171" stroke-width="5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b>3–6 人</b><span>一桌正好，超过就拆两桌</span></div>
+        <div class="stat"><b>¥15–20</b><span>一顿正餐的人均预算</span></div>
+        <div class="stat"><b>15 分钟</b><span>步行可达，太远难长期</span></div>
+        <div class="stat"><b>3 餐 / 周</b><span>每周同桌起步次数</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= benefits ================= -->
+  <section id="benefits">
+    <div class="container">
+      <div class="sec-head">
+        <span class="kicker">为什么搭伙</span>
+        <h2>六件搭伙能带来、外卖给不了的事</h2>
+        <p>一个人开火买菜量难控、时间成本高；长期外卖油腻又昂贵。同龄邻里搭伙，把成本、劳动和烟火气一起摊薄。</p>
+      </div>
+      <div class="benefit-grid">
+        <div class="benefit">
+          <div class="icon-chip">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8l3 3.5L15 8M12 11.5V16M9.5 13h5M9.5 15.5h5"/></svg>
+          </div>
+          <h3>省钱看得见</h3>
+          <p>买菜按人头摊薄，一顿正餐人均 15–20 元；小票拍照、账目当日入账，每一分钱都算得清。</p>
+        </div>
+        <div class="benefit">
+          <div class="icon-chip">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 19c-.5-8.5 5-14 13.5-14.5C18.5 13 13 18.6 5.5 19Z"/><path d="M5.5 19c2.5-5 6.5-8.5 11-10"/></svg>
+          </div>
+          <h3>吃得更健康</h3>
+          <p>家常做法少油少盐，忌口过敏提前申报、菜单必须规避；当餐食材当餐吃完，不吃过夜菜。</p>
+        </div>
+        <div class="benefit">
+          <div class="icon-chip">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+          </div>
+          <h3>时间还给你</h3>
+          <p>买菜、掌勺、备菜、洗碗四角色按周轮换，一周轮到下厨的次数有限，多数时候到点就吃。</p>
+        </div>
+        <div class="benefit">
+          <div class="icon-chip">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5h16a8 8 0 0 1-16 0Z"/><path d="M7.5 10c0-1.3 1-1.3 1-2.6S7.5 6.1 7.5 4.8M12 10c0-1.3 1-1.3 1-2.6S12 6.1 12 4.8M16.5 10c0-1.3 1-1.3 1-2.6s-1-1.3-1-2.6"/></svg>
+          </div>
+          <h3>烟火气不孤单</h3>
+          <p>把一顿晚饭变成稳定的同龄社交场景，饭桌上有话题、有照应，独居和双职工都不将就。</p>
+        </div>
+        <div class="benefit">
+          <div class="icon-chip">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/></svg>
+          </div>
+          <h3>先小人后君子</h3>
+          <p>五表台账全程留痕，垫付当日入账，每周日按净额多退少补一次结清——钱的事不伤感情。</p>
+        </div>
+        <div class="benefit">
+          <div class="icon-chip">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.5 4H18a1.5 1.5 0 0 1 1.5 1.5v13A1.5 1.5 0 0 1 18 20h-4.5"/><path d="M9.5 8l-4 4 4 4M5.5 12h9"/></svg>
+          </div>
+          <h3>来去都体面</h3>
+          <p>请假提前说一声就行，想退出提前一周结清即可；活跃成员不足三人时回到招募流程，圈子不断档。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= launch ================= -->
+  <section id="launch" class="launch">
+    <div class="container">
+      <div class="sec-head">
+        <span class="kicker">发起流程</span>
+        <h2>五步开伙，两周内完成</h2>
+        <p>发起阶段的目标很简单：凑齐 4–6 名核心成员，跑通一次「试餐 + 当场 AA」。结束时你手里会有成员台账、搭伙群、置顶的规则速查和首笔账目。</p>
+      </div>
+      <div class="step-grid">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3>发布招募</h3>
+          <p>在社交平台、业主群与公告栏发布文案，讲清时间、地点、口味、规则、人数五要素。文案可用<a href="开桌倡议生成器.html">开桌倡议生成器</a>一键生成。</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3>报名登记</h3>
+          <p>线上表单填写：可参与餐次、口味偏好、忌口过敏、拿手菜与一技之长。让报名者用<a href="自我介绍生成器.html">自我介绍生成器</a>一张卡说清。</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3>筛选匹配</h3>
+          <p>按距离、时段、口味、忌口、健康承诺五项标准逐一核对，达标者进入试餐名单。</p>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <h3>首次试餐</h3>
+          <p>相互认识、对齐口味、宣读规则；就餐后当场完成首笔 AA 结算。</p>
+        </div>
+        <div class="step">
+          <div class="step-num">05</div>
+          <h3>建群宣规</h3>
+          <p>试餐当天建群，公告置顶规则与台账，填好首周轮值表，正式开伙。</p>
+        </div>
+      </div>
+      <p class="step-note">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 6.5"/></svg>
+        筛选宁缺毋滥：距离超出步行 15 分钟、每周凑不齐 3 餐的，先登记保留，条件合适再邀。
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= daily ops ================= -->
+  <section id="daily">
+    <div class="container">
+      <div class="sec-head">
+        <span class="kicker">日常运转</span>
+        <h2>记住两个时间点就够了</h2>
+        <p>晚上八点定菜单，周日晚上排班结账。其余的事，交给一张轮值表和一本记账本。</p>
+      </div>
+      <div class="ops-grid">
+        <div class="panel">
+          <h3>每一天的节奏</h3>
+          <p class="panel-sub">菜单与轮值一切以表为准，群内只做提醒、不改表。</p>
+          <div class="timeline-item"><span class="time">前一日 20:00</span><p>次日主厨发起菜单接龙或投票，<span>兼顾全员忌口</span></p></div>
+          <div class="timeline-item"><span class="time">前一日 20:30</span><p>菜单仍未定，<span>由主厨直接拍板</span></p></div>
+          <div class="timeline-item"><span class="time">前一日 21:00</span><p>确认次日买菜人与预算，轮值表状态改为已确认</p></div>
+          <div class="timeline-item"><span class="time">当日白天</span><p>买菜人按菜单采购，<span>小票拍照发群</span></p></div>
+          <div class="timeline-item"><span class="time">当日傍晚</span><p>主厨掌勺、帮厨打下手，餐后厨房复位</p></div>
+          <div class="timeline-item"><span class="time">就餐后</span><p>垫付人把金额与参与人<span>当日录入 AA 记账本</span></p></div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:26px">
+            <h3>四个角色，按周轮换</h3>
+            <p class="panel-sub">按顺序循环，保证周期内每人承担各角色的次数基本均衡。</p>
+            <div class="roles">
+              <div class="role">
+                <b><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 10h14l-1.3 8.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 10Z"/><path d="M8.5 10 12 4l3.5 6"/></svg>买菜人</b>
+                <span>按菜单采购，在预算内控量</span>
+              </div>
+              <div class="role">
+                <b><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11.2a3.4 3.4 0 0 1 .9-6.7A4.2 4.2 0 0 1 12 2.8c1.9 0 3.6 1.1 4.1 1.7a3.4 3.4 0 0 1 .9 6.7V17H7v-5.8Z"/><path d="M7 20h10"/></svg>主厨</b>
+                <span>定菜单、掌勺，当餐口味说了算</span>
+              </div>
+              <div class="role">
+                <b><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M5 8l14 8M19 8 5 16"/></svg>帮厨</b>
+                <span>备菜洗切，掌勺打下手</span>
+              </div>
+              <div class="role">
+                <b><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v5M9.5 4v5M6 9a3 3 0 0 0 3.5 0M14.5 3.5 17 9M20 5.5 16.5 9"/><path d="M5 13h14l-1 6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19.5Z"/></svg>洗碗保洁</b>
+                <span>餐后厨房复位，垃圾带走</span>
+              </div>
+            </div>
+            <p class="ops-note">轮值信息一律落在「菜单与轮值表」；口味分歧靠菜单轮换解决，主厨拥有当餐决定权。</p>
+          </div>
+          <div class="panel">
+            <h3>每周日晚上，两件事</h3>
+            <p class="panel-sub">每月最后一个周日加做一次月度复盘。</p>
+            <div class="weekly-item"><span class="time">周日 20:00</span><p>15 分钟线上小会：<span>定下周四角色与菜单框架，兼顾拿手菜与新菜意愿</span></p></div>
+            <div class="weekly-item"><span class="time">周日 21:00</span><p>按记账本净额多退少补，转账结清并在备注标记清零</p></div>
+            <div class="weekly-item"><span class="time">每月末周日</span><p>复盘口味满意度与人均成本，<span>决定是否启动新一轮新人推荐</span></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= rules ================= -->
+  <section id="rules" class="launch">
+    <div class="container">
+      <div class="sec-head">
+        <span class="kicker">规则速查</span>
+        <h2>四条底线，白纸黑字</h2>
+        <p>规则解决分歧：所有约定群内置顶、台账留痕。以下四组规则经全员确认后生效，修订需在小会上提出。</p>
+      </div>
+      <div class="rule-grid">
+        <div class="rule rule-money">
+          <div class="rule-head">
+            <div class="icon-chip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 8l3 3.5L15 8M12 11.5V16M9.5 13h5M9.5 15.5h5"/></svg></div>
+            <h3>费用 AA</h3>
+          </div>
+          <ul>
+            <li><b>垫付制：</b>谁买菜谁垫付，小票拍照发群，当天入账</li>
+            <li><b>分摊：</b>基础调料等公共开支全员均摊；食材与加餐按实际就餐人分摊</li>
+            <li><b>预算：</b>人均一顿 15–20 元，由周日小会滚动校准</li>
+            <li><b>结算：</b>净额为正应收回、为负应补缴，每周日转账结清</li>
+          </ul>
+        </div>
+        <div class="rule rule-new">
+          <div class="rule-head">
+            <div class="icon-chip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M3.5 19c.6-3.4 2.8-5 5.5-5s4.9 1.6 5.5 5"/><path d="M18 8v6M15 11h6"/></svg></div>
+            <h3>新人准入</h3>
+          </div>
+          <ul>
+            <li><b>只走推荐：</b>老成员推荐进入，不做公开招募，保证信任链完整</li>
+            <li><b>两次试餐：</b>每次均正常 AA 付费，全员无异议后转正入台账</li>
+            <li><b>一票否决：</b>任何成员可否决，且无需说明理由</li>
+            <li><b>优先补短板：</b>会修水电、能驾车采购、擅长某菜系者加分</li>
+          </ul>
+        </div>
+        <div class="rule rule-leave">
+          <div class="rule-head">
+            <div class="icon-chip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3.5V7M16 3.5V7M4 10h16M9.5 15.5l2 2 3.5-3.5"/></svg></div>
+            <h3>请假与退出</h3>
+          </div>
+          <ul>
+            <li><b>请假：</b>提前一天告知当周主厨，当餐按实际就餐人分摊</li>
+            <li><b>自动退出：</b>连续四次未参与且未请假，视为自动退出</li>
+            <li><b>主动退出：</b>提前一周说明并结清账目，档案保留、随时回流</li>
+            <li><b>低于三人：</b>在册活跃成员不足三人时，回到发起阶段重新招募</li>
+          </ul>
+        </div>
+        <div class="rule rule-safe">
+          <div class="rule-head">
+            <div class="icon-chip"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 5 6v5.5c0 4.4 3 7.6 7 9 4-1.4 7-4.6 7-9V6Z"/><path d="M9 12l2.2 2.2L15.5 9.7"/></svg></div>
+            <h3>安全与边界</h3>
+          </div>
+          <ul>
+            <li><b>健康承诺：</b>全员签署；忌口过敏信息全员可见</li>
+            <li><b>带病暂停：</b>患传染性疾病期间主动暂停参与</li>
+            <li><b>用火安全：</b>做饭期间用火用电不离人</li>
+            <li><b>非商业性质：</b>餐费只按成本分摊、不含盈利，参与即认可风险自担</li>
+          </ul>
+        </div>
+      </div>
+      <div class="dispute">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M5 7h9M5 7a3 3 0 0 1-3 3 3 3 0 0 0 3 3M5 7a3 3 0 0 0-3 3M19 12h-9M19 12a3 3 0 0 0 3-3 3 3 0 0 1-3-3M19 12a3 3 0 0 1 3 3M16 21h-8"/></svg>
+        <p><b>有分歧怎么办：</b>口味问题靠菜单轮换化解，费用疑问以小票和台账为准，人员矛盾在周日小会上摆到桌面——先看规则，再讲人情。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= join ================= -->
+  <section id="join">
+    <div class="container">
+      <div class="join-band">
+        <span class="kicker">加入我们</span>
+        <h2>想开一桌？三条路任选</h2>
+        <p>你需要准备的只有三样东西：一个聊天群、一套五表台账（飞书 / 钉钉 / WPS 均可导入）、一页置顶的规则速查。</p>
+        <div class="join-ways">
+          <div class="way">
+            <b>① 自己发起</b>
+            <span>参照上方五步发起流程，发布招募、组织试餐，两周内凑齐 4–6 人即可开伙。</span>
+          </div>
+          <div class="way">
+            <b>② 老成员推荐</b>
+            <span>请圈内成员在准入表登记你的特长与契合点，参加两次试餐、全员无异议后转正。</span>
+          </div>
+          <div class="way">
+            <b>③ 先来试一顿</b>
+            <span>联系任意成员约一次试餐，AA 付费、来去自由，双方合适再谈正式加入。</span>
+          </div>
+        </div>
+        <div class="cta-row" style="margin-top:26px;position:relative;z-index:1">
+          <a class="btn btn-light" href="自我介绍生成器.html">生成自我介绍卡 · 求组织收留</a>
+          <a class="btn btn-light" href="开桌倡议生成器.html">生成开桌倡议 · 招募饭搭子</a>
+        </div>
+        <p class="join-foot">本小组为非商业邻里互助，餐费按成本分摊、不含盈利；入组需签署健康承诺书。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p class="f-brand">邻里饭搭子 · 互助共餐</p>
+    <p>规则与台账配套《饭搭子互助台账.xlsx》——成员台账 / 菜单与轮值 / AA 记账本 / 新人推荐与准入 / 规则速查</p>
+    <p>非商业邻里互助项目 · 2026</p>
+  </div>
+</footer>
+
+</body>
+</html>
