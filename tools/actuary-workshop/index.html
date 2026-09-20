@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>精算工坊 —— 保险产品设计模拟器 · 南山人寿产品精算部</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- 顶部 HUD（GDD §2） -->
+  <header id="hud">
+    <div class="hud-brand">🏭 南山人寿 · 产品精算部<span class="hud-sub" id="hud-sub">精算工坊 · 第一阶段「产品设计」</span></div>
+    <div class="hud-block hud-rank">
+      <span class="hud-label">职级</span>
+      <div class="rank-wrap">
+        <b id="hud-rank-name">助理精算师</b>
+        <div class="rankbar"><i id="hud-rank-fill"></i></div>
+        <span class="hud-next" id="hud-rank-next">下一级 精算师 · 0/30</span>
+      </div>
+    </div>
+    <div class="hud-block"><span class="hud-label">研发预算</span><b id="hud-budget" class="hud-num">¥500,000</b></div>
+    <div class="hud-block"><span class="hud-label">声望</span><b id="hud-prestige" class="hud-num">0</b></div>
+    <div class="hud-block hud-time"><span class="hud-label">2026年9月</span><span class="hud-rate">研究值 <b>1.94%</b> · 普通型上限 <b>2.0%</b></span></div>
+  </header>
+
+  <!-- 六阶段全流程（GDD §1） -->
+  <nav id="stagebar" aria-label="六阶段流程"></nav>
+
+  <!-- 三栏主界面（GDD §3） -->
+  <main id="layout">
+    <aside id="sidebar">
+      <button id="btn-gallery" class="side-btn">📖 知识图鉴 <span class="side-badge" id="gallery-count">0/30</span></button>
+      <button id="btn-archives" class="side-btn">🗂️ 案头档案 <span class="side-badge" id="archive-count">0</span></button>
+      <button id="btn-reset" class="side-btn side-danger">♻️ 重置进度</button>
+      <div class="law-box">
+        <b>⚖️ 法定三条免责</b>
+        <div>· 投保人故意杀害被保险人不赔（《保险法》43条）</div>
+        <div>· 被保险人故意犯罪致死不赔（45条）</div>
+        <div>· 合同成立/复效2年内自杀不赔、满2年应赔（44条）</div>
+      </div>
+      <div class="side-tip">本工坊当前开放：产品设计 / 监管申报 / 批复公示 / 上架销售 / 出险勘察 / 理赔结算 / 续期经营。<br>监管口径快照：2026-09。</div>
+    </aside>
+
+    <section id="workspace">
+      <div id="wizard-tabs">
+        <button class="wtab on" data-step="1">① 立项</button>
+        <button class="wtab" data-step="2">② 设计</button>
+        <button class="wtab" data-step="3">③ 自检</button>
+      </div>
+      <div id="step1" class="step on"></div>
+      <div id="step2" class="step"></div>
+      <div id="step3" class="step"></div>
+      <div id="filing" class="step"></div>
+      <div id="approval" class="step"></div>
+      <div id="sales" class="step"></div>
+      <div id="claims" class="step" style="display:none"></div>
+      <div id="renewal" class="step" style="display:none"></div>
+    </section>
+
+    <aside id="dash"></aside>
+  </main>
+
+  <!-- 底部导师条（GDD §10） -->
+  <footer id="mentorbar">
+    <div id="mentor-avatar">🧑‍🦳</div>
+    <div id="mentor-info"><b>总精算师 · 陈砚</b><span>实时点评</span></div>
+    <div id="mentor-lines"></div>
+  </footer>
+</div>
+
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+
+<script src="js/data/tables.js"></script>
+<script src="js/data/products.js"></script>
+<script src="js/data/knowledge.js"></script>
+<script src="js/data/mentor.js"></script>
+<script src="js/data/filing.js"></script>
+<script src="js/data/approval.js"></script>
+<script src="js/data/sales.js"></script>
+<script src="js/data/claims.js"></script>
+<script src="js/data/renewal.js"></script>
+<script src="js/engine/pricing.js"></script>
+<script src="js/engine/compliance.js"></script>
+<script src="js/engine/scoring.js"></script>
+<script src="js/engine/filing.js"></script>
+<script src="js/engine/approval.js"></script>
+<script src="js/engine/sales.js"></script>
+<script src="js/engine/claims.js"></script>
+<script src="js/engine/renewal.js"></script>
+<script src="js/ui/render.js"></script>
+<script src="js/ui/filing.js"></script>
+<script src="js/ui/approval.js"></script>
+<script src="js/ui/sales.js"></script>
+<script src="js/ui/claims.js"></script>
+<script src="js/ui/renewal.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
